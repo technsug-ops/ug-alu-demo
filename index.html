@@ -197,17 +197,22 @@ tr:last-child td{border-bottom:0}
 @media (max-width:860px){.tablet{border-width:0;border-radius:0;box-shadow:none;margin:0 -12px}.ttiles{grid-template-columns:1fr}.treasons{grid-template-columns:1fr}}
 
 /* Autoplay */
-.apbar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(900px,calc(100% - 24px));background:var(--ink);color:var(--bg);border-radius:16px;padding:12px 16px;z-index:8;display:grid;grid-template-columns:1fr auto;gap:4px 16px;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:15px}
-.apbar .ap-role{font-weight:700;font-size:13px;opacity:.8}
-.apbar .ap-text{grid-row:2;line-height:1.4}
+.apbar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(980px,calc(100% - 24px));background:#1A1D20;color:#F2F4F5;border-radius:18px;padding:14px 18px 12px;z-index:8;display:grid;grid-template-columns:52px 1fr auto;gap:4px 16px;box-shadow:0 18px 50px rgba(0,0,0,.45);font-size:17px;border-left:6px solid var(--ap-role,#FFBC00)}
+.apbar .ap-avatar{grid-row:1/3;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--ap-role,#FFBC00);color:#1A1D20}
+.apbar .ap-role{font-weight:700;font-size:13.5px;letter-spacing:.01em;color:var(--ap-role,#FFBC00)}
+.apbar .ap-text{grid-row:2;line-height:1.45;font-size:17px}
 .apbar .ap-ctl{grid-row:1/3;display:flex;gap:6px;align-items:center}
-.apbar .ap-step{font-size:12px;opacity:.7;margin-right:4px}
-.apbar button{cursor:pointer;border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;border-radius:8px;padding:6px 10px;font-size:14px}
+.apbar .ap-step{font-size:12px;opacity:.75;margin-right:6px;white-space:nowrap}
+.apbar button{cursor:pointer;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.06);color:inherit;border-radius:9px;padding:7px 11px;font-size:14px}
+.apbar button:hover{background:rgba(255,255,255,.14)}
+.apbar .ap-prog{grid-column:1/-1;height:5px;background:rgba(255,255,255,.15);border-radius:999px;overflow:hidden;margin-top:8px}
+.apbar .ap-prog i{display:block;height:100%;width:0;background:var(--ap-role,#FFBC00);transition:width .4s}
+.apbar .ap-next{grid-column:2;font-size:12.5px;opacity:.6;margin-top:2px}
 .ap-hl{outline:3px solid #B4600A!important;outline-offset:3px;border-radius:8px;transition:outline-color .2s}
 .scen .play{background:var(--brand-bg);color:var(--brand-ink);border-color:var(--brand)}
 .scen-item{display:inline-flex;gap:3px;align-items:center}.scen .play{padding:5px 9px;font-size:12px}
 
-@media (max-width:860px){.apbar{grid-template-columns:1fr}.apbar .ap-ctl{grid-row:3}}
+@media (max-width:860px){.apbar{grid-template-columns:44px 1fr;font-size:15px}.apbar .ap-ctl{grid-row:3;grid-column:1/-1}.apbar .ap-text{font-size:15px}}
 
 /* Auftragsverfolgung */
 .row-sel td{background:var(--brand-bg)}
@@ -222,8 +227,8 @@ tr:last-child td{border-bottom:0}
 @media (max-width:980px){.timeline{grid-template-columns:repeat(3,1fr)}}
 
 .ap-cursor{position:fixed;z-index:9;pointer-events:none;transform:translate(-3px,-2px);transition:left .6s cubic-bezier(.3,.7,.3,1),top .6s cubic-bezier(.3,.7,.3,1);filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
-.ap-dot{position:fixed;z-index:8;pointer-events:none;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#B4600A;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:apfade 9s forwards}
-.ap-ripple{position:fixed;z-index:8;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid #B4600A;animation:aprip .9s ease-out forwards}
+.ap-dot{position:absolute;z-index:8;pointer-events:none;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#B4600A;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:apfade 9s forwards}
+.ap-ripple{position:absolute;z-index:8;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid #B4600A;animation:aprip .9s ease-out forwards}
 @keyframes aprip{from{transform:scale(1);opacity:.9}to{transform:scale(4.5);opacity:0}}
 @keyframes apfade{0%,60%{opacity:1}100%{opacity:0}}
 
@@ -423,7 +428,7 @@ const skuLen=l=>l>=2000?l/10:l;
 function computeRecipe(o){
   const B=+o.B, T=+o.T, vsg=o.glas==="VSG";
   const pitch=vsg?757:1008;
-  const n=Math.max(2,Math.round((B-RULES.gap)/pitch));
+  const n=Math.max(2,Math.ceil((B-RULES.gap)/pitch-0.02));
   let panels;
   if(vsg){ const w=Math.round((B-(n+1)*RULES.gap)/n); panels=Array(n).fill(w); }
   else{ const nStd=n-2, rest=B-(n+1)*RULES.gap-nStd*RULES.stdPanel; let edge=Math.round(rest/2);
@@ -842,16 +847,17 @@ const AP={running:false,paused:false,stop:false,speed:0.5,step:0,total:0};
 /* Sichtbarer Zeiger + Klickspur */
 function cursorEl(){ let c=document.getElementById("apcur"); if(!c){ c=document.createElement("div"); c.id="apcur"; c.className="ap-cursor"; c.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 2l16 9-7 1.5L17 20l-2.5 1.2L10 14l-5 5z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>'; document.body.appendChild(c); c.style.left="40%"; c.style.top="40%"; } return c; }
 async function moveCursor(el,ms=650){ if(!el) return; const c=cursorEl(); const r=el.getBoundingClientRect(); const x=r.left+Math.min(r.width/2,120), y=r.top+r.height/2; c.style.left=x+"px"; c.style.top=y+"px"; await sleep(ms); return [x,y]; }
-function clickMark(x,y){ const d=document.createElement("div"); d.className="ap-dot"; d.style.left=x+"px"; d.style.top=y+"px"; const n=++clickMark.n; d.textContent=n; document.body.appendChild(d); setTimeout(()=>d.remove(),9000); const rp=document.createElement("div"); rp.className="ap-ripple"; rp.style.left=x+"px"; rp.style.top=y+"px"; document.body.appendChild(rp); setTimeout(()=>rp.remove(),900); }
+function clickMark(x,y){ const X=x+window.scrollX,Y=y+window.scrollY; const d=document.createElement("div"); d.className="ap-dot"; d.style.left=X+"px"; d.style.top=Y+"px"; const n=++clickMark.n; d.textContent=n; document.body.appendChild(d); setTimeout(()=>d.remove(),9000); const rp=document.createElement("div"); rp.className="ap-ripple"; rp.style.left=X+"px"; rp.style.top=Y+"px"; document.body.appendChild(rp); setTimeout(()=>rp.remove(),900); }
 clickMark.n=0;
 const sleep=ms=>new Promise(res=>{ const t0=Date.now(); const tick=()=>{ if(AP.stop) return res(); if(AP.paused){ setTimeout(tick,120); return; } if(Date.now()-t0>=ms/AP.speed) return res(); setTimeout(tick,60); }; tick(); });
-function narrate(role,de,trT){ const L=S.lang||"de"; const r=ROLES[role]; const box=document.getElementById("apbar"); if(!box) return; box.querySelector(".ap-role").textContent=r.ic+" "+(r[L]||r.de); box.querySelector(".ap-text").textContent=L==="tr"?trT:de; box.querySelector(".ap-step").textContent=`${AP.step}/${AP.total}`; }
+const ROLE_COLOR={kunde:"#FFBC00",vertrieb:"#6CB4FF",lager:"#7FD39A",saege:"#FF9F43",komm:"#C39BFF",fahrer:"#5FD4D0",montage:"#FF8A80",system:"#E0E4E8",chef:"#FFD15C"};
+function narrate(role,de,trT,next){ const L=S.lang||"de"; const r=ROLES[role]; const box=document.getElementById("apbar"); if(!box) return; box.style.setProperty("--ap-role",ROLE_COLOR[role]||"#FFBC00"); box.querySelector(".ap-avatar").textContent=r.ic; box.querySelector(".ap-role").textContent=(r[L]||r.de); box.querySelector(".ap-text").textContent=L==="tr"?trT:de; box.querySelector(".ap-step").textContent=`${L==="tr"?"Adım":"Schritt"} ${AP.step}/${AP.total}`; box.querySelector(".ap-prog i").style.width=Math.round(AP.step/Math.max(1,AP.total)*100)+"%"; const nx=box.querySelector(".ap-next"); if(nx) nx.textContent=next?`${L==="tr"?"Sonraki":"Als Nächstes"}: ${ROLES[next.role]?.[L]||ROLES[next.role]?.de||""}`:""; }
 function hl(sel){ document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); const el=document.querySelector(sel); if(el){ el.classList.add("ap-hl"); el.scrollIntoView({block:"center",behavior:AP.speed>2?"auto":"smooth"}); } return el; }
 async function act(sel,ms=1000){ const el=hl(sel); if(!el) return; const p=await moveCursor(el,ms); if(AP.stop) return; clickMark(...p); await sleep(350); el.click(); await sleep(450); }
-function apBar(){ const L=S.lang||"de"; return `<div class="apbar" id="apbar"><div class="ap-role"></div><div class="ap-text"></div><div class="ap-ctl"><span class="ap-step"></span><button data-ap="pause" title="Pause">⏸</button><button data-ap="play" title="Weiter">▶</button><button data-ap="speed">${AP.speed}×</button><button data-ap="stop">✕ ${L==="tr"?"Bitir":"Beenden"}</button></div></div>`; }
+function apBar(){ const L=S.lang||"de"; return `<div class="apbar" id="apbar"><div class="ap-avatar"></div><div class="ap-role"></div><div class="ap-text"></div><div class="ap-ctl"><span class="ap-step"></span><button data-ap="pause" title="Pause">⏸</button><button data-ap="play" title="Weiter">▶</button><button data-ap="speed">${AP.speed}×</button><button data-ap="stop">✕ ${L==="tr"?"Bitir":"Beenden"}</button></div><div class="ap-next"></div><div class="ap-prog"><i></i></div></div>`; }
 function apStart(scen){ if(AP.running) return; S=freshState(scen); S.view="auftrag"; render(); AP.running=true; AP.paused=false; AP.stop=false; AP.step=0; document.body.insertAdjacentHTML("beforeend",apBar()); const script=scen===5?SCRIPT5:SCRIPT1; AP.total=script.length; runScript(script); }
 function apEnd(){ AP.running=false; AP.stop=true; document.getElementById("apbar")?.remove(); document.getElementById("apcur")?.remove(); document.querySelectorAll(".ap-dot,.ap-ripple").forEach(e=>e.remove()); clickMark.n=0; document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); }
-async function runScript(script){ for(const st of script){ if(AP.stop) break; AP.step++; narrate(st.role,st.de,st.tr); await sleep(900); await st.run(); if(AP.stop) break; await sleep(st.hold??2600); } if(!AP.stop){ narrate("system","Szenario abgeschlossen. Alle Schritte stehen im Ereignisprotokoll (Alt-ERP vs. neu).","Senaryo tamamlandı. Tüm adımlar olay protokolünde (Alt-ERP vs. neu)."); await sleep(3500); } apEnd(); }
+async function runScript(script){ for(let si=0;si<script.length;si++){ const st=script[si]; if(AP.stop) break; AP.step++; narrate(st.role,st.de,st.tr,script[si+1]); await sleep(900); await st.run(); if(AP.stop) break; await sleep(st.hold??2600); } if(!AP.stop){ narrate("system","Szenario abgeschlossen. Alle Schritte stehen im Ereignisprotokoll (Alt-ERP vs. neu).","Senaryo tamamlandı. Tüm adımlar olay protokolünde (Alt-ERP vs. neu)."); await sleep(3500); } apEnd(); }
 const V=async v=>{ S.view=v; render(); await sleep(1400); };
 const TAB=async s=>{ S.view="werkstatt"; S.station=s; S.tab={}; render(); await sleep(1400); };
 async function cutAllTablet(o,r,visible){ const plan=planFor(o,r); for(let i=0;i<plan.length;i++){ if(AP.stop) return; const c=S.cut[o.id]||{}; if(c[i]) continue; S.tab={}; render(); if(i<visible){ await act('button[data-tact="scan"]',900); await act('button[data-tact="done"]',900); } else { const btn=document.querySelector('button[data-tact="done"]'); if(btn){ const p=await moveCursor(btn,i%6===0?500:120); clickMark(...p); } markCut(o,i,true); render(); await sleep(520); } } }
