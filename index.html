@@ -381,6 +381,8 @@ body.ap-on .main{padding-bottom:220px}body.ap-on .tablet{margin-bottom:60px}
 .nav .nav-install button{background:rgba(255,188,0,.18);color:var(--brand);font-weight:700;opacity:1}
 @media (max-width:860px){.topbar>div:first-child{flex:0 0 auto!important}.topbar{min-height:0}.tb-right{flex:0 0 auto}}
 @media (max-width:860px){.shop-tabbar{display:none}.shop-urlbar{padding:6px 10px}.shop-urlbar .nav-btns{display:none}.shop-urlbar .url{font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}#btnWebBack{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.35);background:#222629;color:#fff;border-color:#222629}.shop-tools{display:none}.shop-foot{padding:14px 16px 70px}}
+.rx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}@media (max-width:980px){.rx-grid{grid-template-columns:1fr}}
+.rx-json{margin:4px 0 0;max-height:220px;overflow:auto;background:#1A1D20;color:#D7E0E6;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:10px 12px;border-radius:10px;white-space:pre-wrap}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -1467,6 +1469,32 @@ const _recheckWaiting=recheckWaiting; recheckWaiting=function(){ const before=S.
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; if(b.id==="btnAbnahme"||(b.dataset.tact==="abnahme"&&S.view==="werkstatt")){ setTimeout(()=>{ const o=cur(); if(S.montage[o.id]?.abnahme){ makeInvoice(o,"schluss"); render(); } },50); } });
 /* Szenario-Vorbelegung: historische Aufträge haben Rechnungen */
 const _applyOrderPresets2=applyOrderPresets; applyOrderPresets=function(st,sc){ _applyOrderPresets2(st,sc); const S0=S; S=st; QUIET=true; try{ ensureInv(); st.orders.forEach(o=>{ const stt=statusOf(o); if(stt>=1){ const i=makeInvoice(o,"anzahlung"); if(i&&stt>=4){ i.status="bezahlt"; i.paid=i.date; } } if(stt>=7){ const i=makeInvoice(o,"schluss"); if(i&&(o.daysAgo||0)>18){ i.status="bezahlt"; i.paid=i.date; } } }); st.mails=(st.mails||[]).filter(m=>!/rechnung/i.test(m.subject)||true); }finally{ S=S0; QUIET=false; } };
+
+/* ===================== ROUTEXL (simulierter API-Aufruf) ===================== */
+function haversine(a,b){ const al=a.lng??a.lon, bl=b.lng??b.lon; const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLon=(bl-al)*Math.PI/180; const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(x))*1.25; }
+function routexlSimulate(stops){ // Nearest-Neighbour ab Werk, Rückfahrt, Ankunftszeiten ab 07:30, 35 min Entladen je Stopp
+  const locs=[{name:"UG-Alu Ratingen",lat:WERK.lat,lng:WERK.lon,order:null},...stops.map(s=>({name:s.c.city,lat:s.c.lat,lng:s.c.lon,order:s.o.id}))];
+  const req={locations:locs.map((l,i)=>({address:i===0?"Werk":l.order,lat:l.lat,lng:l.lng,servicetime:i===0?0:35})),options:{roundtrip:true,traffic:true}};
+  let rest=locs.slice(1), cur_=locs[0], route=[], t=7.5, dist=0;
+  while(rest.length){ rest.sort((a,b)=>haversine(cur_,a)-haversine(cur_,b)); const n=rest.shift(); const d=haversine(cur_,n); dist+=d; t+=d/55; route.push({name:n.name,order:n.order,distance:+dist.toFixed(1),arrival:t}); t+=35/60; cur_=n; }
+  const back=haversine(cur_,locs[0]); dist+=back; t+=back/55;
+  const fmtT=h=>`${String(Math.floor(h)).padStart(2,"0")}:${String(Math.round((h%1)*60)).padStart(2,"0")}`;
+  const res={id:"tour-"+Math.random().toString(36).slice(2,8),count:route.length,feasible:true,route:Object.fromEntries(route.map((r,i)=>[i+1,{name:r.name,order:r.order,distance:r.distance,arrival:Math.round((r.arrival-7.5)*60),arrival_time:fmtT(r.arrival)}])),distance:+dist.toFixed(1),duration:Math.round((t-7.5)*60),back_at:fmtT(t)};
+  return {req,res}; }
+const _viewVersandtag=viewVersandtag; viewVersandtag=function(){ let h=_viewVersandtag(); const rx=S.routexl; const ready=S.orders.filter(o=>statusOf(o)>=4);
+  if(!ready.length) return h;
+  const box=rx&&rx.done?`<div class="card rx"><div class="zone-head"><h2>RouteXL · ${L("Tour optimiert","Tur optimize edildi")}</h2><span class="tag ok">API 200 OK · ${rx.res.distance} km · ${Math.floor(rx.res.duration/60)} h ${rx.res.duration%60} min</span></div>
+    <div class="rx-grid"><div><div class="small muted">POST https://api.routexl.com/tour</div><pre class="rx-json">${esc(JSON.stringify(rx.req,null,1))}</pre></div><div><div class="small muted">${L("Antwort","Yanıt")} · ${rx.res.id}</div><pre class="rx-json">${esc(JSON.stringify(rx.res,null,1))}</pre></div></div>
+    <table style="margin-top:10px"><thead><tr><th>#</th><th>${L("Stopp","Durak")}</th><th>${L("Auftrag","Sipariş")}</th><th class="num">km kum.</th><th class="num">${L("Ankunft","Varış")}</th><th>${L("Beladung","Yükleme")}</th></tr></thead><tbody>${Object.values(rx.res.route).map((r,i,a)=>`<tr><td><b>${i+1}</b></td><td>${r.name}</td><td>${r.order}</td><td class="num">${r.distance}</td><td class="num">${r.arrival_time}</td><td class="small">${i===a.length-1?L("zuerst verladen – ganz hinten","önce yüklenir – en dipte"):i===0?L("zuletzt verladen – an der Tür","en son yüklenir – kapıda"):L("Mitte","orta")}</td></tr>`).join("")}</tbody></table>
+    <p class="hint">${L("Abfahrt 07:30 ab Ratingen, 35 min Entladung je Stopp, Rückkehr","Ratingen'den 07:30 çıkış, durak başına 35 dk boşaltma, dönüş")} ${rx.res.back_at}. ${L("Simulierter Aufruf mit dem echten Request/Response-Format der RouteXL-API; im Projekt läuft der Aufruf über den Server mit UG-Alu-Zugangsdaten (bis 10 Stopps kostenlos).","RouteXL API'sinin gerçek istek/yanıt formatıyla simüle çağrı; projede çağrı sunucu üzerinden UG-Alu hesabıyla yapılır (10 durağa kadar ücretsiz).")}</p></div>`:
+   `<div class="card rx"><div class="zone-head"><h2>RouteXL</h2><span class="tag neutral">${L("nicht berechnet","hesaplanmadı")}</span></div><p class="small" style="margin:0 0 10px">${L("Sendet die Koordinaten der versandbereiten Aufträge an die RouteXL-API und übernimmt die optimierte Reihenfolge samt Ankunftszeiten in Tour und Beladeplan.","Sevke hazır siparişlerin koordinatlarını RouteXL API'sine gönderir, optimize sırayı ve varış saatlerini tur ve yükleme planına işler.")}</p><button class="btn" id="btnRouteXL">${L("Route mit RouteXL berechnen","RouteXL ile rota hesapla")}</button>${rx&&rx.busy?`<span class="small muted" style="margin-left:10px">${L("Anfrage läuft …","İstek gönderiliyor …")}</span>`:""}</div>`;
+  h=h.replace('<div class="grid2"><div class="card"><h2>Route',box+'<div class="grid2"><div class="card"><h2>Route');
+  if(rx&&rx.done){ h=h.replace(/<h2>Route · (\d+) Stopps · ca\. [^<]*<\/h2>/,(m,n)=>`<h2>Route · ${n} Stopps · ${rx.res.distance} km · ${Math.floor(rx.res.duration/60)} h ${rx.res.duration%60} min <span class="tag ok">RouteXL</span></h2>`); }
+  return h; };
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&&b.id==="btnRouteXL"){ const ready=S.orders.filter(o=>statusOf(o)>=4); const stops=ready.map(o=>({o,r:computeRecipe(o),c:CUSTOMERS[o.cust]})); S.routexl={busy:true}; render(); pushEvent("RouteXL API",`POST /tour · ${stops.length} ${L("Stopps gesendet","durak gönderildi")}`);
+  setTimeout(()=>{ const {req,res}=routexlSimulate(stops); S.routexl={done:true,req,res}; // Reihenfolge in CUSTOMERS-km übernehmen (Tour-Reihenfolge)
+    Object.values(res.route).forEach((r,i)=>{ const o=S.orders.find(x=>x.id===r.order); if(o) CUSTOMERS[o.cust].km=Math.round(r.distance); });
+    pushEvent("RouteXL API",`200 OK · ${res.distance} km · ${Math.floor(res.duration/60)} h ${res.duration%60} min · ${L("Beladeplan aktualisiert","yükleme planı güncellendi")}`); render(); },1400); } });
 
 /* ===================== RENDER & AKTIONEN ===================== */
 function render(){ renderNav(); document.querySelectorAll("#sideLang button").forEach(b=>b.setAttribute("aria-pressed",String((S.lang||"de")===b.dataset.lang))); const m=document.getElementById("main");
