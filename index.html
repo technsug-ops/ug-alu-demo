@@ -554,6 +554,7 @@ function freshState(scenId){
     st.planCache={}; st.orders.forEach(o=>{ const r=computeRecipe(o); const plan=cutPlan(o,r,st.rest); st.planCache[o.id]=stripPlan(plan); st.cut[o.id]={}; plan.forEach((b,i)=>{ st.cut[o.id][i]={w:WORKERS[i%2].id,t:"08:"+String(10+i*3).padStart(2,"0")}; if(!b.fromRest) st.stock[b.sku]=Math.max(0,(st.stock[b.sku]||0)-1); if(b.cls==="rest"){ st.restSeq++; st.rest.push({id:"R-00"+st.restSeq,base:baseOf(b.name,o),len:b.rest,loc:"Z5-Rest",from:o.id}); } });
       const L=pickLists(o,r); st.pick[o.id]={}; ["z8","z9"].forEach(k=>L[k].forEach((_,i)=>st.pick[o.id][k+i]=true)); if(sc.preset==="ready") L.z10.forEach((_,i)=>st.pick[o.id]["z10"+i]=true); });
   }
+  st.lang=(typeof S!=="undefined"&&S&&S.lang)||"de"; st.perf=(typeof S!=="undefined"&&S&&S.perf)||"7T";
   applyOrderPresets(st,sc);
   return st;
 }
