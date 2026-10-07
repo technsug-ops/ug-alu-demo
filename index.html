@@ -288,7 +288,9 @@ body.webmode .side{display:none}body.webmode .app{grid-template-columns:1fr}body
 .shop-urlbar .nav-btns{color:#888;letter-spacing:4px}.shop-urlbar .url{flex:1;background:#F1F3F4;border-radius:999px;padding:7px 14px;font-size:13.5px;color:#222}
 .shop{background:#fff;color:#1b1b1b;font-family:"Inter Tight",system-ui,sans-serif}
 .shop-head{display:flex;align-items:center;gap:30px;padding:14px 40px;border-bottom:1px solid #E6E6E6;flex-wrap:wrap}
-.shop-logo{display:flex;align-items:center;min-width:120px}.shop-logo-img{height:46px;width:auto}.shop-logo-img.nf{display:none}.shop-logo-img.nf+.shop-logo-txt{display:inline}.shop-logo-txt{display:none;font-weight:800;font-size:24px;letter-spacing:.05em;color:#1F2A33}
+.shop-logo{display:flex;align-items:center;min-width:120px;gap:12px}
+.shop-erp{cursor:pointer;border:1.5px solid #222629;background:#222629;color:#FFBC00;font-weight:700;font-size:13px;border-radius:999px;padding:6px 12px;white-space:nowrap}
+@media (max-width:1000px){#btnWebBack{display:none}}.shop-logo-img{height:46px;width:auto}.shop-logo-img.nf{display:none}.shop-logo-img.nf+.shop-logo-txt{display:inline}.shop-logo-txt{display:none;font-weight:800;font-size:24px;letter-spacing:.05em;color:#1F2A33}
 .shop-nav{display:flex;gap:22px;font-size:14.5px;color:#333;flex:1}.shop-nav a.on{color:#C8102E;font-weight:600}
 .shop-tools{display:flex;gap:18px;font-size:14px;color:#444}
 .shop-strip{background:#1F2A33;color:#fff;font-size:13px;padding:7px 40px}
@@ -1237,7 +1239,7 @@ viewWeb=function(){ const w=webState(); const o={B:w.B,T:w.T,glas:w.glas,farbe:w
     <div class="shop-pay"><span>Zahlung: 50 % Anzahlung per Überweisung, 50 % bei Lieferung · oder PayPal</span></div><button class="shop-cta" id="btnWebSend">Jetzt kaufen</button></div>`:"";
   return `<div class="shop-chrome"><div class="shop-tabbar"><span class="tab-active">UG-Alu → Terrassenüberdachung aus Aluminium nach Maß</span><span class="tab-idle">Produktionssteuerung – UG-Alu</span></div><div class="shop-urlbar"><span class="nav-btns">‹ › ⟳</span><span class="url">🔒 https://www.ug-alu.de/ueberdachungen/terrassenueberdachung</span><button class="btn secondary sm" id="btnWebBack">${L("Zurück ins System","Sisteme dön")}</button></div></div>
   <div class="shop">
-   <header class="shop-head"><div class="shop-logo">${img(SHOP_IMG.logo,"shop-logo-img")}<span class="shop-logo-txt">UG-ALU</span></div><nav class="shop-nav"><a>Startseite</a><a class="on">Überdachungen</a><a>Vordächer</a><a>Seitenelemente</a><a>Solar</a><a>Beschattungen</a><a>Zubehör</a></nav><div class="shop-tools"><span>DE</span><span>Anmelden</span><span class="cart-ic">🛒 ${w.cart?1:0}</span></div></header>
+   <header class="shop-head"><div class="shop-logo">${img(SHOP_IMG.logo,"shop-logo-img")}<span class="shop-logo-txt">UG-ALU</span><button class="shop-erp" id="btnWebBack2" title="${L("Zurück zur Produktionssteuerung","Üretim yönetimine dön")}">⇄ ERP</button></div><nav class="shop-nav"><a>Startseite</a><a class="on">Überdachungen</a><a>Vordächer</a><a>Seitenelemente</a><a>Solar</a><a>Beschattungen</a><a>Zubehör</a></nav><div class="shop-tools"><span>DE</span><span>Anmelden</span><span class="cart-ic">🛒 ${w.cart?1:0}</span></div></header>
    <div class="shop-strip">☎ 02102-7708577 &nbsp; ✓ Professionelle Beratung &nbsp; ✓ 0% Finanzierung &nbsp; ✓ Großes Sortiment</div>
    <div class="shop-crumb">Startseite › Überdachungen › <b>Terrassenüberdachung aus Aluminium nach Maß</b></div>
    <div class="shop-body">
@@ -1267,7 +1269,7 @@ function handoverAnimation(o){ return new Promise(res=>{ const L_=(d,t)=>(S.lang
 async function webCheckout(){ const w=webState(); if(!w.cart) return; w.glas=(SHOP_EINDECKUNG.find(x=>x[1]===w.glasLabel)||SHOP_EINDECKUNG[0])[0]; _webSubmit(); const o=cur(); o.notiz=`Shop-Bestellung: ${w.glasLabel}, ${w.bauart}, ${w.led}, ${w.aufmass}, ${w.montage}`+(w.email?" · "+w.email:""); o.mass=w.aufmass.startsWith("Ja")?"ugalu":"kunde"; processIncoming(o); w.sent=o.id; w.cart=false; render(); await handoverAnimation(o); go("auftrag"); }
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
   if(b.id==="btnWebCart"){ webState().cart=!webState().cart; render(); window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}); return; }
-  if(b.id==="btnWebBack"){ go("auftrag"); return; }
+  if(b.id==="btnWebBack"||b.id==="btnWebBack2"){ go("auftrag"); return; }
   if(b.dataset.view==="web"){ const w=webState(); w.sent=null; w.cart=false; } },true);
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&&b.id==="btnWebSend"&&S.view==="web"){ e.stopImmediatePropagation(); webCheckout(); } },true);
 document.addEventListener("change",e=>{ const t=e.target; if(t.dataset.web==="glasLabel"){ const w=webState(); w.glasLabel=t.value; w.glas=(SHOP_EINDECKUNG.find(x=>x[1]===t.value)||SHOP_EINDECKUNG[0])[0]; if(w.glas==="VSG"&&w.T>4000) w.T=4000; render(); } });
