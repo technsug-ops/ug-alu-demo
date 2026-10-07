@@ -720,18 +720,18 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b
 
 /* ===================== AUTOPLAY: Szenario läuft wie von Hand ===================== */
 const ROLES={vertrieb:{de:"Anna Keller · Vertrieb (Z1)",tr:"Anna Keller · Satış (Z1)",ic:"🧑‍💼"},lager:{de:"Sandra Vogel · Lager & Einkauf",tr:"Sandra Vogel · Depo & Satın alma",ic:"📦"},saege:{de:"Kevin Bauer · Säge M4",tr:"Kevin Bauer · Testere M4",ic:"🪚"},komm:{de:"Lukas Weber · Kommissionierung",tr:"Lukas Weber · Toplama",ic:"🏷️"},fahrer:{de:"Tomasz Nowak · Fahrer, Tor 2",tr:"Tomasz Nowak · Şoför, Kapı 2",ic:"🚚"},montage:{de:"Montageteam beim Kunden",tr:"Montaj ekibi, müşteride",ic:"🔧"},system:{de:"System",tr:"Sistem",ic:"⚙️"},chef:{de:"Geschäftsführung",tr:"Yönetim",ic:"📊"}};
-const AP={running:false,paused:false,stop:false,speed:1,step:0,total:0};
+const AP={running:false,paused:false,stop:false,speed:0.7,step:0,total:0};
 const sleep=ms=>new Promise(res=>{ const t0=Date.now(); const tick=()=>{ if(AP.stop) return res(); if(AP.paused){ setTimeout(tick,120); return; } if(Date.now()-t0>=ms/AP.speed) return res(); setTimeout(tick,60); }; tick(); });
 function narrate(role,de,trT){ const L=S.lang||"de"; const r=ROLES[role]; const box=document.getElementById("apbar"); if(!box) return; box.querySelector(".ap-role").textContent=r.ic+" "+(r[L]||r.de); box.querySelector(".ap-text").textContent=L==="tr"?trT:de; box.querySelector(".ap-step").textContent=`${AP.step}/${AP.total}`; }
 function hl(sel){ document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); const el=document.querySelector(sel); if(el){ el.classList.add("ap-hl"); el.scrollIntoView({block:"center",behavior:AP.speed>2?"auto":"smooth"}); } return el; }
-async function act(sel,ms=700){ const el=hl(sel); await sleep(ms); if(AP.stop) return; if(el) el.click(); await sleep(250); }
+async function act(sel,ms=1000){ const el=hl(sel); await sleep(ms); if(AP.stop) return; if(el) el.click(); await sleep(250); }
 function apBar(){ const L=S.lang||"de"; return `<div class="apbar" id="apbar"><div class="ap-role"></div><div class="ap-text"></div><div class="ap-ctl"><span class="ap-step"></span><button data-ap="pause" title="Pause">⏸</button><button data-ap="play" title="Weiter">▶</button><button data-ap="speed">${AP.speed}×</button><button data-ap="stop">✕ ${L==="tr"?"Bitir":"Beenden"}</button></div></div>`; }
 function apStart(scen){ if(AP.running) return; S=freshState(scen); S.view="auftrag"; render(); AP.running=true; AP.paused=false; AP.stop=false; AP.step=0; document.body.insertAdjacentHTML("beforeend",apBar()); const script=scen===5?SCRIPT5:SCRIPT1; AP.total=script.length; runScript(script); }
 function apEnd(){ AP.running=false; AP.stop=true; document.getElementById("apbar")?.remove(); document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); }
-async function runScript(script){ for(const st of script){ if(AP.stop) break; AP.step++; narrate(st.role,st.de,st.tr); await st.run(); if(AP.stop) break; await sleep(st.hold??1600); } if(!AP.stop){ narrate("system","Szenario abgeschlossen. Alle Schritte stehen im Ereignisprotokoll (Alt-ERP vs. neu).","Senaryo tamamlandı. Tüm adımlar olay protokolünde (Alt-ERP vs. neu)."); await sleep(3500); } apEnd(); }
-const V=async v=>{ S.view=v; render(); await sleep(900); };
-const TAB=async s=>{ S.view="werkstatt"; S.station=s; S.tab={}; render(); await sleep(900); };
-async function cutAllTablet(o,r,visible){ const plan=planFor(o,r); for(let i=0;i<plan.length;i++){ if(AP.stop) return; const c=S.cut[o.id]||{}; if(c[i]) continue; S.tab={}; render(); if(i<visible){ await act('button[data-tact="scan"]',900); await act('button[data-tact="done"]',900); } else { markCut(o,i,true); render(); await sleep(140); } } }
+async function runScript(script){ for(const st of script){ if(AP.stop) break; AP.step++; narrate(st.role,st.de,st.tr); await sleep(900); await st.run(); if(AP.stop) break; await sleep(st.hold??2600); } if(!AP.stop){ narrate("system","Szenario abgeschlossen. Alle Schritte stehen im Ereignisprotokoll (Alt-ERP vs. neu).","Senaryo tamamlandı. Tüm adımlar olay protokolünde (Alt-ERP vs. neu)."); await sleep(3500); } apEnd(); }
+const V=async v=>{ S.view=v; render(); await sleep(1400); };
+const TAB=async s=>{ S.view="werkstatt"; S.station=s; S.tab={}; render(); await sleep(1400); };
+async function cutAllTablet(o,r,visible){ const plan=planFor(o,r); for(let i=0;i<plan.length;i++){ if(AP.stop) return; const c=S.cut[o.id]||{}; if(c[i]) continue; S.tab={}; render(); if(i<visible){ await act('button[data-tact="scan"]',900); await act('button[data-tact="done"]',900); } else { markCut(o,i,true); render(); await sleep(420); } } }
 async function tapAll(sel,ms){ for(let k=0;k<80;k++){ if(AP.stop) return; const el=document.querySelector(sel); if(!el) return; el.classList.add("ap-hl"); await sleep(ms); el.click(); } }
 
 const SCRIPT1=[
@@ -743,12 +743,12 @@ const SCRIPT1=[
  {role:"saege",de:"Kevin nimmt das Tablet: Stange holen, scannen, schneiden, Fertig. Die ersten drei Stangen Schritt für Schritt …",tr:"Kevin tableti alıyor: çubuğu al, okut, kes, bitti. İlk üç çubuk adım adım …",run:async()=>{ await TAB("saege"); await cutAllTablet(cur(),computeRecipe(cur()),3); }},
  {role:"saege",de:"… dann im Takt der Säge. Jede Buchung zieht die Stange vom Bestand ab; Reste ≥ 500 mm bekommen ein Etikett für Z5-Rest.",tr:"… sonra testere ritminde. Her kayıt çubuğu stoktan düşüyor; ≥ 500 mm artıklar Z5-Rest için etiket alıyor.",run:async()=>{ await cutAllTablet(cur(),computeRecipe(cur()),0); await sleep(800); },hold:2200},
  {role:"system",de:"Letzte Stange gebucht → der Auftrag springt automatisch in die Kommissionierung. Lukas sieht ihn sofort auf seinem Tablet.",tr:"Son çubuk kaydedildi → sipariş otomatik toplamaya geçti. Lukas tabletinde hemen görüyor.",run:async()=>{ await V("bestand"); S.stockTab="rest"; render(); hl(".tabs"); await sleep(1800); }},
- {role:"komm",de:"Lukas packt nach Liste: Z8 Profile und Platten, Z9 Zubehör-Koli. Kein Teil „aus Erfahrung“.",tr:"Lukas listeye göre topluyor: Z8 profiller ve levhalar, Z9 aksesuar kolisi. Hiçbir parça „ezberden“ değil.",run:async()=>{ await TAB("komm"); await tapAll('button[data-pick-t]:not(.on)',220); await sleep(600); }},
+ {role:"komm",de:"Lukas packt nach Liste: Z8 Profile und Platten, Z9 Zubehör-Koli. Kein Teil „aus Erfahrung“.",tr:"Lukas listeye göre topluyor: Z8 profiller ve levhalar, Z9 aksesuar kolisi. Hiçbir parça „ezberden“ değil.",run:async()=>{ await TAB("komm"); await tapAll('button[data-pick-t]:not(.on)',380); await sleep(600); }},
  {role:"system",de:"Z8 und Z9 vollständig, Z10 nicht benötigt → „Versandbereit“. Der Lieferschein ist freigegeben.",tr:"Z8 ve Z9 tamam, Z10 gerekmiyor → „Sevke hazır“. Lieferschein serbest.",run:async()=>{ await V("versand"); hl(".doc"); await sleep(1600); }},
  {role:"fahrer",de:"Tomasz belädt an Tor 2 nach Checkliste. Er vergisst den Zubehör-Koli …",tr:"Tomasz Kapı 2'de checklist'e göre yüklüyor. Aksesuar kolisini unutuyor …",run:async()=>{ await TAB("verl"); const keys=[...document.querySelectorAll('button[data-load-t]')].map(t=>t.dataset.loadT).filter(k=>!k.endsWith("|z9")); for(const k of keys){ if(AP.stop) return; await act(`button[data-load-t="${k}"]`,700); } hl(".tbig.bad"); await sleep(1500); }},
  {role:"system",de:"Tor gesperrt: „1 fehlt – Zubehör-Koli Z9“. Genau der Fehler, der heute erst beim Kunden auffällt.",tr:"Kapı kilitli: „1 eksik – aksesuar kolisi Z9“. Bugün ancak müşteride fark edilen hata.",run:async()=>{ hl(".tbig.bad"); await sleep(1800); }},
  {role:"fahrer",de:"Koli nachgeladen – Tor frei, Abfahrt. Kunde bekommt automatisch die Nachricht.",tr:"Koli yüklendi – kapı açık, yola çıkış. Müşteriye otomatik bildirim.",run:async()=>{ await act('button[data-load-t$="|z9"]',900); await act('button[data-tact="depart"]',900); await sleep(600); }},
- {role:"montage",de:"Beim Kunden: sieben Schritte abhaken, Foto je Schritt, Unterschrift. Abnahme bestätigt → Rechnung kann raus.",tr:"Müşteride: yedi adım, her adıma foto, imza. Teslim onayı → fatura kesilebilir.",run:async()=>{ await TAB("mont"); await tapAll('button[data-mont-t]:not(.on)',380); await act('button[data-tact="sign"]',700); await act('button[data-tact="abnahme"]',700); await sleep(600); }},
+ {role:"montage",de:"Beim Kunden: sieben Schritte abhaken, Foto je Schritt, Unterschrift. Abnahme bestätigt → Rechnung kann raus.",tr:"Müşteride: yedi adım, her adıma foto, imza. Teslim onayı → fatura kesilebilir.",run:async()=>{ await TAB("mont"); await tapAll('button[data-mont-t]:not(.on)',600); await act('button[data-tact="sign"]',700); await act('button[data-tact="abnahme"]',700); await sleep(600); }},
  {role:"chef",de:"Am Ende des Tages: Durchlaufzeit, Verschnitt, Ausschuss je Mitarbeiter – aus den Zeitstempeln, ohne Extraaufwand.",tr:"Gün sonunda: çevrim süresi, fire, çalışan başına ıskarta – zaman damgalarından, ek iş olmadan.",run:async()=>{ await V("kpi"); hl(".kpis"); await sleep(2000); },hold:2500},
 ];
 const SCRIPT5=[
@@ -761,7 +761,7 @@ const SCRIPT5=[
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
   if(b.dataset.apstart){ apStart(+b.dataset.apstart); return; }
   if(b.dataset.ap==="pause"){ AP.paused=true; return; } if(b.dataset.ap==="play"){ AP.paused=false; return; }
-  if(b.dataset.ap==="speed"){ AP.speed=AP.speed>=3?1:AP.speed+1; b.textContent=AP.speed+"×"; return; }
+  if(b.dataset.ap==="speed"){ const steps=[0.5,0.7,1,1.5,2]; AP.speed=steps[(steps.indexOf(AP.speed)+1)%steps.length]; b.textContent=AP.speed+"×"; return; }
   if(b.dataset.ap==="stop"){ apEnd(); return; } });
 
 /* ===================== SZENARIO 6: AUFTRAGSBUCH (10 Aufträge, Verfolgung) ===================== */
