@@ -261,6 +261,62 @@ tr:last-child td{border-bottom:0}
 .mail{border:1px solid var(--line-2);border-radius:10px;padding:8px 12px;margin-bottom:8px;background:var(--bg)}
 .mail summary{cursor:pointer;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
 .mail pre{white-space:pre-wrap;font:13px/1.5 "Inter Tight",system-ui,sans-serif;margin:8px 0 0;color:var(--ink-2)}
+
+/* Shop-Vollbild */
+body.webmode .side{display:none}body.webmode .app{grid-template-columns:1fr}body.webmode .main{max-width:none;padding:0 0 40px}
+.shop-chrome{background:#DEE1E6;border-bottom:1px solid #C9CDD3}
+.shop-tabbar{display:flex;gap:4px;padding:8px 10px 0}
+.shop-tabbar span{padding:7px 14px;border-radius:8px 8px 0 0;font-size:12.5px;color:#444;background:#CDD1D7;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shop-tabbar .tab-active{background:#fff;color:#111}
+.shop-urlbar{display:flex;align-items:center;gap:12px;background:#fff;padding:8px 14px;border-bottom:1px solid #DDD}
+.shop-urlbar .nav-btns{color:#888;letter-spacing:4px}.shop-urlbar .url{flex:1;background:#F1F3F4;border-radius:999px;padding:7px 14px;font-size:13.5px;color:#222}
+.shop{background:#fff;color:#1b1b1b;font-family:"Inter Tight",system-ui,sans-serif}
+.shop-head{display:flex;align-items:center;gap:30px;padding:14px 40px;border-bottom:1px solid #E6E6E6;flex-wrap:wrap}
+.shop-logo{display:flex;align-items:center;min-width:120px}.shop-logo-img{height:46px;width:auto}.shop-logo-img.nf{display:none}.shop-logo-img.nf+.shop-logo-txt{display:inline}.shop-logo-txt{display:none;font-weight:800;font-size:24px;letter-spacing:.05em;color:#1F2A33}
+.shop-nav{display:flex;gap:22px;font-size:14.5px;color:#333;flex:1}.shop-nav a.on{color:#C8102E;font-weight:600}
+.shop-tools{display:flex;gap:18px;font-size:14px;color:#444}
+.shop-strip{background:#1F2A33;color:#fff;font-size:13px;padding:7px 40px}
+.shop-crumb{padding:12px 40px;font-size:13px;color:#666}
+.shop-body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;padding:10px 40px 40px}
+@media (max-width:980px){.shop-body{grid-template-columns:1fr;padding:10px 16px 30px}.shop-head,.shop-strip,.shop-crumb{padding-left:16px;padding-right:16px}}
+.shop-main-img{position:relative;border:1px solid #EEE;border-radius:8px;overflow:hidden;background:#F6F7F8;min-height:220px}
+.shop-img{display:block;width:100%;height:auto}.shop-img.nf{display:none}.shop-img.nf+.shop-fallback{display:block}.shop-fallback{display:none;padding:30px 20px}
+.shop-thumbs{display:flex;gap:8px;margin-top:10px}.shop-thumb{width:90px;height:68px;object-fit:cover;border:1px solid #DDD;border-radius:6px}.shop-thumb.nf{display:none}
+.shop-desc{margin-top:22px;font-size:14.5px;color:#333}.shop-desc h2{font-size:18px;margin:0 0 8px;color:#1F2A33}.shop-desc ul{padding-left:18px;margin:0}
+.shop-config h1{font-size:24px;margin:0 0 6px;color:#1F2A33;line-height:1.2}.shop-meta{font-size:12.5px;color:#666;margin-bottom:14px}
+.shop-config h4{font-size:13px;color:#C8102E;margin:16px 0 6px;letter-spacing:.02em}
+.shop-config label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#444;margin-bottom:10px}
+.shop-sel{padding:9px 10px;border:1px solid #CFD3D8;border-radius:6px;font-size:15px;background:#fff;color:#1b1b1b}
+.shop-note{font-size:12px;color:#777;margin:-4px 0 8px}
+.shop-price{display:flex;flex-direction:column;gap:2px;border-top:1px solid #E6E6E6;padding:14px 0;margin-top:10px}.shop-price span{font-size:13px;color:#666}.shop-price b{font-size:22px;color:#1F2A33}.shop-price small{font-size:12px;color:#777}
+.shop-qty{display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:12px}.shop-qty input{width:60px;padding:8px;border:1px solid #CFD3D8;border-radius:6px;font-size:15px}
+.shop-cta{cursor:pointer;background:#C8102E;color:#fff;border:0;border-radius:8px;padding:15px 24px;font-size:17px;font-weight:700;width:100%}.shop-cta.secondary{background:#1F2A33}.shop-cta:disabled{opacity:.5}
+.shop-cart{margin-top:18px;border:1px solid #E6E6E6;border-radius:10px;padding:16px;background:#FAFAFA}.shop-cart h3{margin:0 0 10px;font-size:16px}
+.shop-cart-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;font-size:14px}.shop-cart-row .shop-thumb{flex:none}
+.shop-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.shop-form label{margin:0}.shop-form input{padding:9px 10px;border:1px solid #CFD3D8;border-radius:6px;font-size:15px}
+@media (max-width:980px){.shop-form{grid-template-columns:1fr}}
+.shop-pay{font-size:12.5px;color:#666;margin:10px 0}
+.shop-foot{padding:18px 40px;border-top:1px solid #E6E6E6;font-size:12.5px;color:#777}
+/* Übergabe-Animation */
+.handover{position:fixed;inset:0;z-index:20;background:rgba(15,23,32,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;transition:opacity .4s;color:#fff}
+.handover.show{opacity:1}
+.ho-stage{position:relative;display:flex;align-items:center;gap:60px}
+.ho-box{width:200px;padding:22px 18px;border-radius:16px;text-align:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2)}
+.ho-box .ho-title{font-weight:700;font-size:18px}.ho-box .ho-sub{font-size:12px;opacity:.7;margin-top:4px}
+.ho-erp{border-color:var(--brand-2);box-shadow:0 0 0 0 rgba(43,179,191,.5);animation:hoPulse 1.6s 2.4s 3}
+@keyframes hoPulse{0%{box-shadow:0 0 0 0 rgba(43,179,191,.6)}100%{box-shadow:0 0 0 22px rgba(43,179,191,0)}}
+.ho-line{width:60px;height:3px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;border-radius:2px}.ho-line i{position:absolute;inset:0;background:var(--brand-2);transform:translateX(-100%);animation:hoLine 1.2s .4s forwards}
+@keyframes hoLine{to{transform:translateX(0)}}
+.ho-packet{position:absolute;left:40px;top:50%;transform:translate(0,-50%);background:#fff;color:#1b1b1b;border-radius:12px;padding:10px 14px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:2px;z-index:2;transition:transform 1.3s cubic-bezier(.4,0,.2,1)}
+.ho-packet.fly{transform:translate(300px,-50%) scale(.9)}
+.ho-steps{list-style:none;margin:0;padding:0;display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.ho-steps li{font-size:15px;opacity:.35;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.25);transition:all .3s}
+.ho-steps li.on{opacity:1;background:var(--brand);border-color:var(--brand)}.ho-steps li.on::before{content:"✓ "}
+@media (max-width:860px){.ho-stage{gap:20px}.ho-box{width:130px;padding:14px 10px}.ho-packet.fly{transform:translate(170px,-50%) scale(.85)}}
+/* Person-Chip */
+.who{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:999px;background:var(--panel);border:1px solid var(--line-2);box-shadow:var(--shadow);font-size:13px;line-height:1.15;flex:none}
+.who .who-ic{width:28px;height:28px;border-radius:50%;background:var(--brand-bg);display:grid;place-items:center;font-size:15px}
+.who small{display:block;color:var(--ink-3);font-size:11.5px}.who b{font-weight:600}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -939,13 +995,13 @@ document.addEventListener("change",e=>{ const t=e.target; if(t.dataset.web){ con
 document.addEventListener("input",e=>{ const t=e.target; if(t.dataset.web&&(t.dataset.web==="name"||t.dataset.web==="email")) webState()[t.dataset.web]=t.value; });
 /* Autoplay: Szenario 1 beginnt auf der Website */
 SCRIPT1.splice(0,2,
- {role:"kunde",de:"Familie Schmidt aus Siegburg öffnet ug-alu.de und konfiguriert: 4060 × 5000, Stegplatte klar, Anthrazit. Vier Klicks, keine Rückfrage nötig.",tr:"Siegburg'dan Schmidt ailesi ug-alu.de'yi açıp konfigüre ediyor: 4060 × 5000, şeffaf levha, antrasit. Dört tıklama, soru gerekmedi.",
-  run:async()=>{ S.web={B:4060,T:5000,glas:"Stegplatte Klar",farbe:"7016",pfosten:2500,name:"Dirk Schmidt",cust:"siegburg",email:"d.schmidt@beispiel.de",sent:null}; await V("web");
-    for(const sel of ['select[data-web="B"]','select[data-web="T"]','button[data-webglas="Stegplatte Klar"]','button[data-webfarbe="7016"]','input[data-web="name"]']){ const el=hl(sel); const p=await moveCursor(el,700); clickMark(...p); await sleep(500); } }},
- {role:"kunde",de:"„Unverbindlich anfragen“ – die Anfrage verlässt die Website und ist eine Sekunde später ein Auftrag im System.",tr:"„Talep gönder“ – talep siteden çıkıyor, bir saniye sonra sistemde sipariş.",
-  run:async()=>{ await act("#btnWebSend",900); await sleep(1800); await act("#btnWebToErp",800); }},
- {role:"vertrieb",de:"Anna sieht den Auftrag mit Quelle „Website“: nichts abgetippt, nichts vergessen. Die Verfügbarkeitsprüfung ist schon durch – alle Stangen auf Lager.",tr:"Anna siparişi „Website“ kaynaklı görüyor: elle yazılan, unutulan yok. Stok kontrolü çoktan geçti – tüm çubuklar stokta.",
-  run:async()=>{ hl(".lock.open"); await sleep(1500); }}
+ {role:"kunde",de:"Familie Schmidt aus Siegburg ist auf ug-alu.de: Breite, Tiefe, Eindeckung, Farbe – vier Auswahlfelder, kein Anruf nötig.",tr:"Siegburg'dan Schmidt ailesi ug-alu.de'de: genişlik, derinlik, örtü, renk – dört seçim, telefon gerekmedi.",
+  run:async()=>{ S.web={B:4060,T:5000,glas:"Stegplatte Klar",glasLabel:"Stegplatte Klar Polycarbonat 16mm",farbe:"7016",pfosten:2500,led:"Ohne LED",aufmass:"Ohne Aufmaß",montage:"Ohne Montage",bauart:"Mit Wandanschluss",name:"Dirk Schmidt",cust:"siegburg",email:"d.schmidt@beispiel.de",cart:false,sent:null}; await V("web");
+    for(const sel of ['select[data-web="B"]','select[data-web="T"]','select[data-web="glasLabel"]','select[data-web="farbe"]']){ const el=hl(sel); const p=await moveCursor(el,700); clickMark(...p); await sleep(500); } }},
+ {role:"kunde",de:"„In den Warenkorb legen“, Name und Lieferort, „Jetzt kaufen“. Die Bestellung verlässt den Shop …",tr:"„Sepete ekle“, ad ve teslimat yeri, „Şimdi satın al“. Sipariş mağazadan çıkıyor …",
+  run:async()=>{ await act("#btnWebCart",900); await sleep(600); const el=hl('input[data-web="name"]'); const p=await moveCursor(el,700); clickMark(...p); await sleep(600); await act("#btnWebSend",900); await sleep(6500); }},
+ {role:"vertrieb",de:"… und ist im System. Anna sieht den Auftrag mit Quelle „Website“, Konfiguration übernommen, Verfügbarkeit schon geprüft – automatisch bestätigt.",tr:"… ve sistemde. Anna siparişi „Website“ kaynaklı görüyor, konfigürasyon devralındı, stok kontrolü yapıldı – otomatik onaylandı.",
+  run:async()=>{ hl(".lock.open"); await sleep(1800); }}
 );
 ROLES.kunde={de:"Familie Schmidt · Kunde auf ug-alu.de",tr:"Schmidt ailesi · ug-alu.de'de müşteri",ic:"🧑‍💻"};
 
@@ -1042,7 +1098,7 @@ const TR_MAP={
 const TR_KEYS=Object.keys(TR_MAP).sort((a,b)=>b.length-a.length);
 const TR_RE=new RegExp("(?<![A-Za-zÄÖÜäöüß])(?:"+TR_KEYS.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")(?![A-Za-zÄÖÜäöüß])","g");
 function trText(s){ return s.replace(TR_RE,m=>TR_MAP[m]??m); }
-function applyTurkish(root){ if((S.lang||"de")!=="tr") return; const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const p=n.parentElement; if(!p) return NodeFilter.FILTER_REJECT; if(p.closest("pre,code,.site,.tsku,option")) return NodeFilter.FILTER_REJECT; return /[A-Za-zÄÖÜäöüß]/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }});
+function applyTurkish(root){ if((S.lang||"de")!=="tr") return; const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const p=n.parentElement; if(!p) return NodeFilter.FILTER_REJECT; if(p.closest("pre,code,.site,.shop,.shop-chrome,.tsku")) return NodeFilter.FILTER_REJECT; return /[A-Za-zÄÖÜäöüß]/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }});
   const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode); nodes.forEach(n=>{ const v=trText(n.nodeValue); if(v!==n.nodeValue) n.nodeValue=v; }); }
 const _render=render; render=function(){ _render(); applyTurkish(document.getElementById("main")); applyTurkish(document.getElementById("nav")); };
 const _pushEvent=pushEvent; pushEvent=function(station,text){ _pushEvent(station,text); if((S.lang||"de")==="tr"){ const box=document.getElementById("events"); const last=box&&box.lastElementChild; if(last) last.innerHTML=`<b>→ ${esc(trText(station))}</b>${esc(trText(text))}`; } };
@@ -1098,6 +1154,71 @@ apStart=function(scen){ if(AP.running) return; S=freshState(scen); S.view="auftr
 /* Szenario-Leiste: jedes Szenario mit eigenem ▶ */
 scenBar=function(){ const sc=SCENARIOS.find(s=>s.id===S.scen);
   return `<div class="scen"><span class="lbl">${L("Szenario","Senaryo")}</span>${SCENARIOS.map(s=>`<span class="scen-item"><button data-scen="${s.id}" aria-pressed="${s.id===S.scen}">${L(s.title,s.titleTr||s.title)}</button><button class="play" data-apstart="${s.id}" title="${L("Automatisch abspielen","Otomatik oynat")}" aria-label="${L("Szenario","Senaryo")} ${s.id} ${L("abspielen","oynat")}">▶</button></span>`).join("")}<button class="reset" id="btnReset">${L("Demo zurücksetzen","Demoyu sıfırla")}</button><p class="desc">${esc(L(sc.desc,sc.descTr||sc.desc))} <span class="muted">· ▶ = ${L("Szenario läuft von allein, mit Erklärung","Senaryo kendiliğinden oynar, anlatımla")}</span></p></div>`; };
+
+/* ===================== EXTERNE SHOP-SEITE (Vollbild) + ÜBERGABE-ANIMATION ===================== */
+const SHOP_IMG={logo:"https://static.ug-alu.de/images/ug-alu.png",
+ main:"https://images.ug-alu.de/products/1/terrassenuberdachung_anthrazit_stegplatte_3m_1.jpg",
+ g2:"https://images.ug-alu.de/products/1/terrassenuberdachung_anthrazit_stegplatte_3m_2.jpg",
+ g3:"https://images.ug-alu.de/products/1/terrassenuberdachung_anthrazit_stegplatte_3m_3.jpg",
+ g4:"https://images.ug-alu.de/products/1/detail-klasik-antrazit-1ToG63DAtcMOKV.jpg",
+ hero:"https://www.ug-alu.de/_uploads/terrassenueberdachung-nach-mass-2026.png"};
+const SHOP_EINDECKUNG=[["Stegplatte Klar","Stegplatte Klar Polycarbonat 16mm"],["Stegplatte Opal","Stegplatte Opal Polycarbonat 16mm"],["Stegplatte Opal","Stegplatte Zebra Opal Polycarbonat 16mm"],["Stegplatte Opal","Stegplatte Zebra Anthrazit Polycarbonat 16mm"],["VSG","VSG Klar Glas 8mm"],["VSG","VSG Milchglas Glas 8mm"],["VSG","VSG Getönt Grau Glas 8mm"]];
+function webState(){ if(!S.web) S.web={B:4060,T:3500,glas:"Stegplatte Klar",glasLabel:"Stegplatte Klar Polycarbonat 16mm",farbe:"7016",pfosten:2500,led:"Ohne LED",aufmass:"Ohne Aufmaß",montage:"Ohne Montage",bauart:"Mit Wandanschluss",name:"",cust:"duesseldorf",email:"",cart:false,sent:null}; return S.web; }
+viewWeb=function(){ const w=webState(); const o={B:w.B,T:w.T,glas:w.glas,farbe:w.farbe,pfosten:w.pfosten,modell:"classic"}; const r=computeRecipe(o);
+  const opt=(id,opts,val)=>`<select data-web="${id}" class="shop-sel">${opts.map(v=>Array.isArray(v)?`<option value="${v[0]}" ${String(v[0])===String(val)?"selected":""}>${v[1]}</option>`:`<option ${String(v)===String(val)?"selected":""}>${v}</option>`).join("")}</select>`;
+  const cities=Object.entries(CUSTOMERS).map(([k,c])=>[k,c.city+" ("+(c.addr.match(/\d{5}/)||[""])[0]+")"]).sort((a,b)=>a[1].localeCompare(b[1]));
+  const img=(src,cls)=>`<img src="${src}" class="${cls}" alt="" loading="lazy" onerror="this.classList.add('nf')">`;
+  const cart=w.cart&&!w.sent?`<div class="shop-cart"><h3>Warenkorb</h3><div class="shop-cart-row">${img(SHOP_IMG.g2,"shop-thumb")}<div><b>Terrassenüberdachung Classic</b><div class="small">${fmt(w.B)} × ${fmt(w.T)} mm · ${esc(w.glasLabel)} · ${COLORS[w.farbe]}<br>${esc(w.bauart)} · Pfosten ${fmt(w.pfosten)} mm · ${esc(w.led)} · ${esc(w.aufmass)} · ${esc(w.montage)}</div></div><div class="small muted">Menge 1</div></div>
+    <div class="shop-form"><label><span>Name *</span><input data-web="name" value="${esc(w.name)}" placeholder="Vor- und Nachname"></label><label><span>Lieferort *</span>${opt("cust",cities,w.cust)}</label><label><span>E-Mail *</span><input data-web="email" value="${esc(w.email)}" placeholder="name@beispiel.de"></label></div>
+    <div class="shop-pay"><span>Zahlung: 50 % Anzahlung per Überweisung, 50 % bei Lieferung · oder PayPal</span></div><button class="shop-cta" id="btnWebSend">Jetzt kaufen</button></div>`:"";
+  return `<div class="shop-chrome"><div class="shop-tabbar"><span class="tab-active">UG-Alu → Terrassenüberdachung aus Aluminium nach Maß</span><span class="tab-idle">Produktionssteuerung – UG-Alu</span></div><div class="shop-urlbar"><span class="nav-btns">‹ › ⟳</span><span class="url">🔒 https://www.ug-alu.de/ueberdachungen/terrassenueberdachung</span><button class="btn secondary sm" id="btnWebBack">${L("Zurück ins System","Sisteme dön")}</button></div></div>
+  <div class="shop">
+   <header class="shop-head"><div class="shop-logo">${img(SHOP_IMG.logo,"shop-logo-img")}<span class="shop-logo-txt">UG-ALU</span></div><nav class="shop-nav"><a>Startseite</a><a class="on">Überdachungen</a><a>Vordächer</a><a>Seitenelemente</a><a>Solar</a><a>Beschattungen</a><a>Zubehör</a></nav><div class="shop-tools"><span>DE</span><span>Anmelden</span><span class="cart-ic">🛒 ${w.cart?1:0}</span></div></header>
+   <div class="shop-strip">☎ 02102-7708577 &nbsp; ✓ Professionelle Beratung &nbsp; ✓ 0% Finanzierung &nbsp; ✓ Großes Sortiment</div>
+   <div class="shop-crumb">Startseite › Überdachungen › <b>Terrassenüberdachung aus Aluminium nach Maß</b></div>
+   <div class="shop-body">
+    <div class="shop-gallery"><div class="shop-main-img">${img(SHOP_IMG.main,"shop-img")}<div class="shop-fallback">${schemaSVG(o,r)}</div></div><div class="shop-thumbs">${[SHOP_IMG.main,SHOP_IMG.g2,SHOP_IMG.g3,SHOP_IMG.g4].map(s=>img(s,"shop-thumb")).join("")}</div>
+     <div class="shop-desc"><h2>Ihre Vorteile auf einen Blick</h2><ul><li>Produktion in Deutschland und Lieferung aus Deutschland</li><li>Aluminiumlegierung 6063-T6, hochwertig pulverbeschichtet</li><li>10 Jahre Garantie auf Konstruktion und Beschichtung</li><li>Fundamentplan, Aufbauplan, Montagevideos</li><li>Versandkostenfreie Lieferung innerhalb Deutschlands</li></ul></div></div>
+    <div class="shop-config"><h1>Terrassenüberdachung aus Aluminium nach Maß</h1><div class="shop-meta">inkl. 19% MwSt. · Lieferzeit ca. 2–4 Wochen · Selbstabholung ca. 1–3 Tage · Versandkostenfrei innerhalb Deutschland</div>
+     <h4>Grundausführung</h4><label>Modell *${opt("modell",["Classic","Excellent"],"Classic")}</label><label>Bauart der Überdachung *${opt("bauart",["Mit Wandanschluss","Freistehend ohne Wandanschluss"],w.bauart)}</label>
+     <h4>Maße</h4><label>Dachbreite in mm *${opt("B",WEB_WIDTHS.map(v=>[v,"Breite "+v]),w.B)}</label><label>Dachtiefe in mm *${opt("T",WEB_DEPTHS.map(v=>[v,"Tiefe "+v]),w.T)}</label>
+     <h4>Dach und Optik</h4><label>Eindeckung *<select data-web="glasLabel" class="shop-sel">${SHOP_EINDECKUNG.map(([k,l])=>`<option value="${l}" ${w.glasLabel===l?"selected":""}>${l}</option>`).join("")}</select></label><label>Farbe *${opt("farbe",[["7016","Anthrazit RAL 7016"],["9016","Weiß RAL 9016"]],w.farbe)}</label>
+     <h4>Pfosten und Konstruktion</h4><label>Pfostenlänge *${opt("pfosten",[[2500,"Standardpfosten 2,50 m"],[3500,"Verlängerte Pfosten 3,50 m"],[5000,"Verlängerte Pfosten 5,00 m"]],w.pfosten)}</label><p class="shop-note">Pfosten werden bei der Montage auf Maß gekürzt.</p>
+     <h4>Ausstattung</h4><label>Beleuchtung *${opt("led",["Ohne LED","Mit LED warmweiß","Mit LED Smart warmweiß","Mit LED RGB mehrfarbig"],w.led)}</label>
+     <h4>Service</h4><label>Vor-Ort Aufmaß *${opt("aufmass",["Ohne Aufmaß","Ja, mit Vor-Ort-Aufmaß"],w.aufmass)}</label><label>Montage *${opt("montage",["Ohne Montage","Ja, mit Montage"],w.montage)}</label>
+     <div class="shop-price"><span>Gesamtpreis</span><b>wird im Live-Shop angezeigt</b><small>inkl. 19% MwSt. · ${r.n} Felder · ${r.n+1} Träger · ${r.posts} Pfosten</small></div>
+     <div class="shop-qty">Menge <input type="number" value="1" min="1" readonly></div>
+     <button class="shop-cta ${w.cart?'secondary':''}" id="btnWebCart" ${w.sent?"disabled":""}>${w.cart?"✓ Im Warenkorb":"In den Warenkorb legen"}</button>
+     ${cart}
+    </div>
+   </div>
+   <footer class="shop-foot">UG-Alu GmbH · Tel. 02102-7708577 · info@ug-alu.de · AGB · Datenschutz · Impressum</footer>
+  </div>`; };
+/* Übergabe: Shop → System */
+function handoverAnimation(o){ return new Promise(res=>{ const L_=(d,t)=>(S.lang==="tr")?t:d; const steps=[L_("Bestellung empfangen","Sipariş alındı"),L_("Konfiguration übernommen","Konfigürasyon devralındı"),L_("Verfügbarkeit geprüft","Stok kontrol edildi"),L_(`Auftrag ${o.id} angelegt`,`Sipariş ${o.id} oluşturuldu`)];
+  const el=document.createElement("div"); el.className="handover"; el.innerHTML=`<div class="ho-stage"><div class="ho-box ho-shop"><div class="ho-title">ug-alu.de</div><div class="ho-sub">Shop</div></div><div class="ho-packet"><b>${o.id}</b><span>${fmt(o.B)} × ${fmt(o.T)} · ${esc(o.glas)}</span></div><div class="ho-line"><i></i></div><div class="ho-box ho-erp"><div class="ho-title">${L_("Produktionssteuerung","Üretim yönetimi")}</div><div class="ho-sub">ERP</div></div></div><ul class="ho-steps">${steps.map(s=>`<li>${s}</li>`).join("")}</ul>`;
+  document.body.appendChild(el); requestAnimationFrame(()=>el.classList.add("show"));
+  const lis=el.querySelectorAll(".ho-steps li"); let i=0; const tick=()=>{ if(i<lis.length){ lis[i].classList.add("on"); i++; setTimeout(tick,900); } else setTimeout(()=>{ el.classList.remove("show"); setTimeout(()=>{ el.remove(); res(); },400); },900); };
+  setTimeout(()=>{ el.querySelector(".ho-packet").classList.add("fly"); },300); setTimeout(tick,1200); }); }
+async function webCheckout(){ const w=webState(); if(!w.cart) return; w.glas=(SHOP_EINDECKUNG.find(x=>x[1]===w.glasLabel)||SHOP_EINDECKUNG[0])[0]; _webSubmit(); const o=cur(); o.notiz=`Shop-Bestellung: ${w.glasLabel}, ${w.bauart}, ${w.led}, ${w.aufmass}, ${w.montage}`+(w.email?" · "+w.email:""); o.mass=w.aufmass.startsWith("Ja")?"ugalu":"kunde"; processIncoming(o); w.sent=o.id; w.cart=false; render(); await handoverAnimation(o); go("auftrag"); }
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
+  if(b.id==="btnWebCart"){ webState().cart=!webState().cart; render(); window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}); return; }
+  if(b.id==="btnWebBack"){ go("auftrag"); return; } },true);
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&&b.id==="btnWebSend"&&S.view==="web"){ e.stopImmediatePropagation(); webCheckout(); } },true);
+document.addEventListener("change",e=>{ const t=e.target; if(t.dataset.web==="glasLabel"){ const w=webState(); w.glasLabel=t.value; w.glas=(SHOP_EINDECKUNG.find(x=>x[1]===t.value)||SHOP_EINDECKUNG[0])[0]; if(w.glas==="VSG"&&w.T>4000) w.T=4000; render(); } });
+
+/* ===================== PERSON JE PROZESSSCHRITT ===================== */
+const WHO={web:["Dirk Schmidt","Kunde · ug-alu.de","🧑‍💻"],auftrag:["Anna Keller","Vertrieb · Z1","🧑‍💼"],rezeptur:["Anna Keller","Vertrieb · Z1","🧑‍💼"],bestand:["Sandra Vogel","Lager & Einkauf","📦"],wareneingang:["Sandra Vogel","Lager · Tor 1","📦"],aufgaben:["Sandra Vogel","Lager & Einkauf","📦"],zuschnitt:["Kevin Bauer","Säge M4","🪚"],kommission:["Lukas Weber","Kommissionierung Z8–Z10","🏷️"],versand:["Lukas Weber","Kommissionierung","🏷️"],versandtag:["Tomasz Nowak","Fahrer · Tor 2","🚚"],montage:["Murat Demir","Montageteam","🔧"],auftragsbuch:["Uğur Bey","Geschäftsführung","📊"],kpi:["Uğur Bey","Geschäftsführung","📊"],vergleich:["Uğur Bey","Geschäftsführung","📊"],lager:["Sandra Vogel","Lager","📦"],werkstatt:null};
+const WHO_TAB={saege:["Kevin Bauer","Säge M4","🪚"],komm:["Lukas Weber","Kommissionierung","🏷️"],verl:["Tomasz Nowak","Fahrer · Tor 2","🚚"],mont:["Murat Demir","Montageteam","🔧"],we:["Sandra Vogel","Lager · Tor 1","📦"]};
+function whoChip(){ let w=WHO[S.view]; if(S.view==="werkstatt") w=WHO_TAB[S.station||"saege"]; if(!w) return ""; const roleTr={"Vertrieb · Z1":"Satış · Z1","Lager & Einkauf":"Depo & Satın alma","Lager · Tor 1":"Depo · Kapı 1","Säge M4":"Testere M4","Kommissionierung Z8–Z10":"Toplama Z8–Z10","Kommissionierung":"Toplama","Fahrer · Tor 2":"Şoför · Kapı 2","Montageteam":"Montaj ekibi","Geschäftsführung":"Yönetim","Lager":"Depo","Kunde · ug-alu.de":"Müşteri · ug-alu.de"}; return `<div class="who" title="${L("Angemeldet","Oturum açık")}"><span class="who-ic">${w[2]}</span><span><b>${w[0]}</b><small>${L(w[1],roleTr[w[1]]||w[1])}</small></span></div>`; }
+const _render2=render; render=function(){ _render2(); document.body.classList.toggle("webmode",S.view==="web"); const m=document.getElementById("main"); if(S.view!=="web"){ const tb=m.querySelector(".topbar"); if(tb&&!tb.querySelector(".who")) tb.insertAdjacentHTML("beforeend",whoChip()); }
+  // Seitenleiste zweisprachig
+  const tr_=S.lang==="tr"; const brand=document.querySelector(".brand"); if(brand) brand.innerHTML=tr_?"Üretim Yönetimi<small>techNS UG · Konsept demo</small>":"Produktionssteuerung<small>techNS UG · Konzeptdemo</small>"; const tag=document.querySelector(".demo-tag"); if(tag) tag.textContent=tr_?"Örnek verilerle demo":"Demo mit Beispieldaten"; const foot=document.querySelector(".side .foot"); if(foot) foot.textContent=tr_?"Reçete kuralları 6 referans reçeteden (Eyl. 2026). „Varsayım“ işaretli kurallar UG-Alu ile netleştirilecek.":"Rezepturregeln aus 6 Referenz-Stücklisten (Sept. 2026). Als „Annahme“ markierte Regeln werden mit UG-Alu abgestimmt."; };
+/* Zonenbeschreibungen, Platzhalter, Toasts zweisprachig */
+const ZONES_TR={Z1:["Z1 Ofis","Sipariş girişi, reçete onayı, satın alma."],Z2:["Z2 Perde üretimi","Kış bahçesi perdeleri, platform M1, 2 kişi. Kapı 1'den ayrı malzeme girişi."],Z3:["Z3 Küçük parça kesimi","Sürme ve sabit elemanlar, makine M2 ve M3, 1 kişi."],Z4:["Z4 Sarf malzemesi","Vida, lastik, silikon, bant, iniş borusu setleri. Z9 kolilerinin kaynağı."],Z5:["Z5 Büyük profil kesimi","Makine M4, 2 kişi. Yanında tekrar kullanılacak artıklar (Z5-Rest)."],Z6:["Z6 Profil deposu","Standart boyda boyalı çubuklar, raf D1–D8. Her çubuk bir stok kalemi."],Z7:["Z7 Çatı elemanları","Levhalar 980×6000, şeffaf ve opal."],Z8:["Z8 Toplama noktası profiller","Sipariş başına kesilmiş profiller ve perdeler. İki palet yeri."],Z9:["Z9 Toplama noktası aksesuar","Sipariş başına aksesuar kolisi, Kapı 2'nin hemen yanında."],Z10:["Z10 Toplama noktası cam","Camcıdan VSG, açık alanda. Sevk öncesi hasar kontrolü."],T1:["Kapı 1 Mal kabul","Perde, sarf ve profiller buradan girer → mal kabul kaydı."],T2:["Kapı 2 Mal çıkışı","Profiller depoya, hazır siparişler teslimata → irsaliye, stok çıkışı."],LKW:["Sevk","Kapı 2 önünde kamyon. Yükleme tamamlanmadan çıkış yok."]};
+const _viewLager=viewLager; viewLager=function(){ let h=_viewLager(); if(S.lang==="tr"){ Object.entries(ZONES_TR).forEach(([k,[t,d]])=>{ h=h.replace(`<h2>${ZONES[k].t}</h2><p class="small">${ZONES[k].d}</p>`,`<h2>${t}</h2><p class="small">${d}</p>`).replace(`aria-label="${ZONES[k].t}"`,`aria-label="${t}"`); }); } return h; };
+const _toast=toast; toast=function(t){ _toast(S&&S.lang==="tr"?trText(t):t); };
+Object.assign(TR_MAP,{"Szenario geladen":"Senaryo yüklendi","Demo zurückgesetzt":"Demo sıfırlandı","Rezeptur berechnet":"Reçete hesaplandı","angelegt":"oluşturuldu","abgebucht":"stoktan düşüldü","Alle Schnitte gebucht, Bestand abgebucht":"Tüm kesimler kaydedildi, stok düşüldü","Wareneingang gebucht – Material verfügbar":"Mal kabul kaydedildi – malzeme mevcut","Versand gebucht":"Sevk kaydedildi","Ausschuss erfasst, Nachschnitt eingeplant":"Iskarta kaydedildi, yeniden kesim planlandı","Rest":"Artık","als":"olarak","z. B. 1 Pfosten extra, Sonnensegel":"örn. 1 ek direk, güneş yelkeni","Zone wählen":"Zon seç"});
 
 /* ===================== RENDER & AKTIONEN ===================== */
 function render(){ renderNav(); document.querySelectorAll("#sideLang button").forEach(b=>b.setAttribute("aria-pressed",String((S.lang||"de")===b.dataset.lang))); const m=document.getElementById("main");
