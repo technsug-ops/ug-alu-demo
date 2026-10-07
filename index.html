@@ -378,6 +378,7 @@ body.ap-on .main{padding-bottom:220px}body.ap-on .tablet{margin-bottom:60px}
 @media (max-width:980px){.anim-frame{height:1100px}}
 .install-btn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:7;cursor:pointer;border:0;border-radius:999px;background:var(--brand);color:#222629;font-weight:700;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 @media (max-width:860px){.topbar>div:first-child{flex:0 0 auto!important}.topbar{min-height:0}.tb-right{flex:0 0 auto}}
+@media (max-width:860px){.shop-tabbar{display:none}.shop-urlbar{padding:6px 10px}.shop-urlbar .nav-btns{display:none}.shop-urlbar .url{font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}#btnWebBack{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.35);background:#222629;color:#fff;border-color:#222629}.shop-tools{display:none}.shop-foot{padding:14px 16px 70px}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -1251,7 +1252,7 @@ viewWeb=function(){ const w=webState(); const o={B:w.B,T:w.T,glas:w.glas,farbe:w
      <h4>Service</h4><label>Vor-Ort Aufmaß *${opt("aufmass",["Ohne Aufmaß","Ja, mit Vor-Ort-Aufmaß"],w.aufmass)}</label><label>Montage *${opt("montage",["Ohne Montage","Ja, mit Montage"],w.montage)}</label>
      <div class="shop-price"><span>Gesamtpreis</span><b>wird im Live-Shop angezeigt</b><small>inkl. 19% MwSt. · ${r.n} Felder · ${r.n+1} Träger · ${r.posts} Pfosten</small></div>
      <div class="shop-qty">Menge <input type="number" value="1" min="1" readonly></div>
-     <button class="shop-cta ${w.cart?'secondary':''}" id="btnWebCart" ${w.sent?"disabled":""}>${w.cart?"✓ Im Warenkorb":"In den Warenkorb legen"}</button>
+     <button class="shop-cta ${w.cart?'secondary':''}" id="btnWebCart">${w.cart?"✓ Im Warenkorb":"In den Warenkorb legen"}</button>
      ${cart}
     </div>
    </div>
@@ -1266,7 +1267,8 @@ function handoverAnimation(o){ return new Promise(res=>{ const L_=(d,t)=>(S.lang
 async function webCheckout(){ const w=webState(); if(!w.cart) return; w.glas=(SHOP_EINDECKUNG.find(x=>x[1]===w.glasLabel)||SHOP_EINDECKUNG[0])[0]; _webSubmit(); const o=cur(); o.notiz=`Shop-Bestellung: ${w.glasLabel}, ${w.bauart}, ${w.led}, ${w.aufmass}, ${w.montage}`+(w.email?" · "+w.email:""); o.mass=w.aufmass.startsWith("Ja")?"ugalu":"kunde"; processIncoming(o); w.sent=o.id; w.cart=false; render(); await handoverAnimation(o); go("auftrag"); }
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
   if(b.id==="btnWebCart"){ webState().cart=!webState().cart; render(); window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}); return; }
-  if(b.id==="btnWebBack"){ go("auftrag"); return; } },true);
+  if(b.id==="btnWebBack"){ go("auftrag"); return; }
+  if(b.dataset.view==="web"){ const w=webState(); w.sent=null; w.cart=false; } },true);
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&&b.id==="btnWebSend"&&S.view==="web"){ e.stopImmediatePropagation(); webCheckout(); } },true);
 document.addEventListener("change",e=>{ const t=e.target; if(t.dataset.web==="glasLabel"){ const w=webState(); w.glasLabel=t.value; w.glas=(SHOP_EINDECKUNG.find(x=>x[1]===t.value)||SHOP_EINDECKUNG[0])[0]; if(w.glas==="VSG"&&w.T>4000) w.T=4000; render(); } });
 
