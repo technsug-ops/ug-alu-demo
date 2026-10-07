@@ -126,7 +126,7 @@ tr:last-child td{border-bottom:0}
 .cmp li.missing{color:var(--bad)}
 .muted{color:var(--ink-3)}
 .small{font-size:13px}
-.tabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .tabs button{cursor:pointer;border:0;background:none;padding:8px 12px;font-size:14px;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
 .events{position:fixed;right:18px;top:calc(14px + env(safe-area-inset-top,0px));width:300px;z-index:5;display:flex;flex-direction:column;gap:6px;pointer-events:none}
@@ -349,6 +349,19 @@ body.ap-on .main{padding-bottom:220px}body.ap-on .tablet{margin-bottom:60px}
 .apbar.compact .ap-next,.apbar.compact .ap-prog{display:none}
 .apbar.compact .ap-ctl{grid-row:1}
 .apbar .ap-min{margin-left:2px}
+
+/* Lagerplan: Last & Engpass */
+.hot.warn{border-color:#B4600A;background:rgba(180,96,10,.14)}.hot.bad{border-color:#B3261E;background:rgba(179,38,30,.18);animation:hotPulse 1.6s infinite}
+@keyframes hotPulse{0%,100%{box-shadow:0 0 0 0 rgba(179,38,30,.5)}50%{box-shadow:0 0 0 8px rgba(179,38,30,0)}}
+.load-bar{position:relative;height:10px;background:var(--line-2);border-radius:999px;overflow:visible;margin:4px 0 22px}
+.load-bar i{display:block;height:100%;border-radius:999px;background:var(--ok)}.load-bar i.warn{background:var(--warn)}.load-bar i.bad{background:var(--bad)}
+.load-bar span{position:absolute;left:0;top:14px;font-size:11.5px;color:var(--ink-3)}
+.dept-links{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.dept-chip{cursor:pointer;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:5px 9px;font-size:13px;font-weight:600;display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.dept-chip small{font-weight:400;color:var(--ink-3);font-size:11px}
+.dept-chip.warn{border-color:var(--warn)}.dept-chip.bad{border-color:var(--bad);background:var(--bad-bg)}
+.kpis.small .kpi .v{font-size:20px}.kpis.small .kpi{padding:10px 12px}.kpis.small .kpi .l{font-size:12px}
+.lock.warn{background:var(--warn-bg);color:var(--warn)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -1320,6 +1333,68 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b
   if(b.id==="btnAufbauDone"){ const o=cur(); S.aufbauDone=S.aufbauDone||{}; S.aufbauDone[o.id]=S.aufbauDone[o.id]||{}; const i=S.aufbauStep||0; S.aufbauDone[o.id][i]=true; if(i<AUFBAU.length-1) S.aufbauStep=i+1; else { S.montage[o.id]=S.montage[o.id]||{checks:{},fotos:{}}; [0,1,2,3,4,5,6].forEach(k=>S.montage[o.id].checks[k]=true); toast(L("Aufbau abgeschlossen – Montagecheckliste übernommen","Montaj tamamlandı – checklist'e işlendi")); } render(); return; } });
 /* Rezeptur: offizielle Codes anzeigen */
 const _viewRezeptur=viewRezeptur; viewRezeptur=function(){ let h=_viewRezeptur(); Object.entries(CODES).forEach(([n,c])=>{ h=h.replace(new RegExp(`<td>${n.replace(/[.*+?^${}()|[\\]\\\\]/g,"\\\\$&")}(?=[ <])`,"g"),`<td><span class="code">${c}</span> ${n}`); }); return h; };
+
+/* ===================== LAGERPLAN: ARBEITSLAST, MITARBEITER, LEISTUNG, ENGPÄSSE ===================== */
+const DEPT={
+ Z1:{name:["Büro / Vertrieb","Ofis / Satış"],workers:["Anna Keller"],unit:["Aufträge","sipariş"],cap:6,up:["T1"],down:["Z6"]},
+ Z6:{name:["Profillager","Profil deposu"],workers:["Sandra Vogel"],unit:["Stangen","çubuk"],cap:40,up:["T1","Z1"],down:["Z5"]},
+ Z5:{name:["Großprofil-Zuschnitt M4","Büyük profil kesimi M4"],workers:["Kevin Bauer","Mehmet Yıldız"],unit:["Stangen","çubuk"],cap:10,up:["Z6"],down:["Z8"]},
+ Z3:{name:["Kleinteile-Zuschnitt M2/M3","Küçük parça kesimi M2/M3"],workers:["Ali Kaya"],unit:["Elemente","eleman"],cap:6,up:["Z6"],down:["Z8"]},
+ Z2:{name:["Perdenproduktion M1","Perde üretimi M1"],workers:["Elif Şahin","Jonas Krüger"],unit:["Perden","perde"],cap:3,up:["T1"],down:["Z8"]},
+ Z4:{name:["Verbrauchsmaterial","Sarf malzemesi"],workers:["Sandra Vogel"],unit:["Sets","set"],cap:12,up:["T1"],down:["Z9"]},
+ Z7:{name:["Dachelemente","Çatı elemanları"],workers:["Sandra Vogel"],unit:["Platten","levha"],cap:12,up:["T1"],down:["Z8"]},
+ Z8:{name:["Kommissionierung Profile","Toplama profiller"],workers:["Lukas Weber"],unit:["Positionen","kalem"],cap:30,up:["Z5","Z3","Z2","Z7"],down:["T2"]},
+ Z9:{name:["Kommissionierung Zubehör","Toplama aksesuar"],workers:["Lukas Weber"],unit:["Positionen","kalem"],cap:30,up:["Z4"],down:["T2"]},
+ Z10:{name:["Kommissionierung Glas","Toplama cam"],workers:["Lukas Weber"],unit:["Scheiben","cam"],cap:12,up:["T1"],down:["T2"]},
+ T1:{name:["Wareneingang Tor 1","Mal kabul Kapı 1"],workers:["Sandra Vogel"],unit:["Lieferungen","teslimat"],cap:2,up:[],down:["Z6","Z4","Z7","Z10"]},
+ T2:{name:["Warenausgang Tor 2","Mal çıkışı Kapı 2"],workers:["Tomasz Nowak","Burak Çelik"],unit:["Aufträge","sipariş"],cap:4,up:["Z8","Z9","Z10"],down:["LKW"]},
+ LKW:{name:["Versand / Tour","Sevk / tur"],workers:["Tomasz Nowak"],unit:["Stopps","durak"],cap:5,up:["T2"],down:[]},
+};
+const PERIODS=[["gestern","dün","1T"],["7 Tage","7 gün","7T"],["30 Tage","30 gün","30T"],["6 Monate","6 ay","6M"],["12 Monate","12 ay","12M"]];
+function zoneLoad(k){ const orders=S.orders; let load=0, items=[];
+  const add=(o,n,txt)=>{ if(n>0){ load+=n; items.push(`${o.id}: ${txt}`); } };
+  orders.forEach(o=>{ const st=statusOf(o); const r=computeRecipe(o);
+    if(k==="Z1"&&st<=1) add(o,1,st===0?L("wartet auf Material","malzeme bekliyor"):L("bestätigt, Freigabe","onaylı, serbest"));
+    if(k==="Z6"&&st>=1&&st<=2){ const cs=cutState(o,r); add(o,cs.total-cs.done,`${cs.total-cs.done} ${L("Stangen bereitstellen","çubuk hazırla")}`); }
+    if(k==="Z5"&&st>=1&&st<=2){ const cs=cutState(o,r); add(o,cs.total-cs.done,`${cs.total-cs.done}/${cs.total} ${L("Stangen offen","çubuk açık")}`); }
+    if(k==="Z7"&&st>=1&&st<=3&&!r.vsg) add(o,r.panelRows.reduce((a,p)=>a+p.qty,0),`${r.panelRows.reduce((a,p)=>a+p.qty,0)} ${L("Platten zuschneiden","levha kes")}`);
+    if(k==="Z4"&&st>=1&&st<=3) add(o,1,L("Zubehör-Set packen","aksesuar seti hazırla"));
+    if(k==="Z10"&&st>=1&&st<=3&&r.vsg) add(o,r.panelRows.reduce((a,p)=>a+p.qty,0),S.glasArrived?L("Glas einlagern","camı rafa"):L("wartet auf Glaser","camcı bekleniyor"));
+    if((k==="Z8"||k==="Z9")&&st===3){ const PL=pickLists(o,r); const p=S.pick[o.id]||{}; const key=k.toLowerCase(); const open=PL[key].filter((_,i)=>!p[key+i]).length; add(o,open,`${open} ${L("Positionen offen","kalem açık")}`); }
+    if(k==="T2"&&st>=4&&st<=5) add(o,1,L("versandbereit, Verladung","sevke hazır, yükleme"));
+    if(k==="LKW"&&st===5) add(o,1,L("verladen, Abfahrt","yüklendi, çıkış"));
+  });
+  if(k==="T1"){ const n=S.inbound.filter(b=>b.status!=="gebucht").length; load=n; items=S.inbound.filter(b=>b.status!=="gebucht").map(b=>`${b.id}: ${b.eta}`); }
+  if(k==="Z2"){ load=4; items=[L("4 Perden in Fertigung (Wintergarten Essen)","4 perde üretimde (kış bahçesi Essen)")]; }
+  if(k==="Z3"){ load=3; items=[L("3 Schiebeelemente für A-26-203","A-26-203 için 3 sürme eleman")]; }
+  const d=DEPT[k]; const hours=d&&d.cap?load/d.cap:0; const level=hours>8?"bad":hours>5?"warn":"ok";
+  return {load,items,hours,level}; }
+function perf(worker,period){ // deterministische Beispielwerte je Mitarbeiter/Periode, Live-Anteil aus Session
+  let h=0; for(const ch of worker+period) h=(h*31+ch.charCodeAt(0))%1000; const base=5.5+(h%30)/10; const trend={ "1T":0,"7T":.2,"30T":.4,"6M":.9,"12M":1.3 }[period]||0;
+  const live=Object.values(S.cut).reduce((a,oc)=>a+Object.values(oc).filter(c=>WORKERS.find(w=>w.id===c.w)?.name===worker).length,0);
+  const perH=+(base-trend*0.5).toFixed(1), perDay=Math.round(perH*7.5)+(period==="1T"?live:0), quality=+(97.5-(h%25)/10+trend*0.3).toFixed(1), ontime=+(92+(h%7)+trend).toFixed(0);
+  return {perH,perDay,quality,ontime:Math.min(100,ontime),reuse:Math.round(20+(h%15)+trend*8)}; }
+function zonePanel(k){ const d=DEPT[k]; if(!d) return ""; const z=zoneLoad(k); const per=S.perf||"7T"; const tr_=S.lang==="tr";
+  const lvl={ok:["Normal","Normal"],warn:["Verzögerung droht","Gecikme riski"],bad:["Engpass","Darboğaz"]}[z.level];
+  const link=(ks,label)=>ks.length?`<div class="dept-links"><span class="muted small">${label}</span>${ks.map(x=>{ const zl=zoneLoad(x); return `<button class="dept-chip ${zl.level}" data-zone="${x}">${x}<small>${DEPT[x]?L(DEPT[x].name[0],DEPT[x].name[1]):x} · ${zl.load}</small></button>`; }).join("")}</div>`:"";
+  const rows=d.workers.map(w=>{ const p=perf(w,per); return `<tr><td><b>${w}</b></td><td class="num">${p.perH}</td><td class="num">${p.perDay}</td><td class="num">${p.quality} %</td><td class="num">${p.ontime} %</td></tr>`; }).join("");
+  return `<div class="zone-head"><h2>${k} · ${L(d.name[0],d.name[1])}</h2><span class="tag ${z.level}">${L(lvl[0],lvl[1])}</span></div>
+   <div class="kpis small" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:10px 0 12px"><div class="kpi"><div class="v">${z.load}</div><div class="l">${L("offen","açık")} · ${L(d.unit[0],d.unit[1])}</div></div><div class="kpi"><div class="v">${z.hours.toFixed(1)} h</div><div class="l">${L("bei","kapasite")} ${d.cap} ${L(d.unit[0],d.unit[1])}/h</div></div><div class="kpi"><div class="v">${d.workers.length}</div><div class="l">${L("im Einsatz","görevde")}</div></div></div>
+   <div class="load-bar"><i class="${z.level}" style="width:${Math.min(100,Math.round(z.hours/8*100))}%"></i><span>${L("Auslastung Tagesschicht (8 h)","Günlük vardiya doluluğu (8 s)")}</span></div>
+   ${z.items.length?`<div class="small" style="margin:8px 0 10px">${z.items.slice(0,5).map(t=>`<div>• ${esc(t)}</div>`).join("")}${z.items.length>5?`<div class="muted">+${z.items.length-5}</div>`:""}</div>`:`<p class="muted small">${L("Keine offene Arbeit.","Açık iş yok.")}</p>`}
+   <h3 class="small" style="margin:10px 0 6px">${L("Leistung","Performans")}</h3><div class="tabs" style="margin-bottom:6px">${PERIODS.map(p=>`<button role="tab" aria-selected="${per===p[2]}" data-perf="${p[2]}">${L(p[0],p[1])}</button>`).join("")}</div>
+   <div class="scroll"><table class="small"><thead><tr><th>${L("Mitarbeiter","Çalışan")}</th><th class="num">${L("je Stunde","saatlik")}</th><th class="num">${L("je Tag","günlük")}</th><th class="num">${L("Qualität","Kalite")}</th><th class="num">${L("termingerecht","zamanında")}</th></tr></thead><tbody>${rows}</tbody></table></div>
+   <p class="muted small" style="margin:6px 0 10px">${L("Einheit:","Birim:")} ${L(d.unit[0],d.unit[1])} · ${L("Qualität = Anteil ohne Ausschuss/Nachlieferung","Kalite = ıskarta/ek sevkiyatsız oran")}</p>
+   ${link(d.up,L("Vorgelagert","Önceki"))}${link(d.down,L("Nachgelagert","Sonraki"))}`; }
+function bottleneckStrip(){ const worst=Object.keys(DEPT).map(k=>({k,...zoneLoad(k)})).sort((a,b)=>b.hours-a.hours)[0]; if(!worst||worst.hours<=5) return `<div class="lock open" style="margin-bottom:14px">✓ ${L("Kein Engpass: alle Stationen unter 5 h offener Arbeit.","Darboğaz yok: tüm istasyonlarda açık iş 5 saatin altında.")}</div>`;
+  return `<div class="lock ${worst.level}" style="margin-bottom:14px">${worst.level==="bad"?"⛔":"⚠️"} ${L("Engpass","Darboğaz")}: <b>${worst.k} ${L(DEPT[worst.k].name[0],DEPT[worst.k].name[1])}</b> – ${worst.load} ${L(DEPT[worst.k].unit[0],DEPT[worst.k].unit[1])} ${L("offen","açık")}, ${worst.hours.toFixed(1)} h ${L("bei","kapasite")} ${DEPT[worst.k].cap}/h. ${L("Nachgelagert wartet:","Sonraki bekliyor:")} ${DEPT[worst.k].down.join(", ")||"–"}<button class="btn secondary sm" data-zone="${worst.k}" style="margin-left:auto">${L("Zone öffnen","Zonu aç")}</button></div>`; }
+const _viewLager2=viewLager; viewLager=function(){ let h=_viewLager2();
+  h=h.replace('<div class="map-grid">',bottleneckStrip()+'<div class="map-grid">');
+  Object.keys(DEPT).forEach(k=>{ const z=zoneLoad(k); h=h.replace(`<button class="hot" data-zone="${k}"`,`<button class="hot ${z.level}" data-zone="${k}"`); });
+  if(S.mapZone&&DEPT[S.mapZone]){ h=h.replace(/<div class="card">(<h2>[\s\S]*?)<\/div><\/div>$/,(m)=>`<div class="card">${zonePanel(S.mapZone)}${zoneContent(S.mapZone)?'<h3 class="small" style="margin:12px 0 6px">'+L("Bestand / Inhalt","Stok / içerik")+'</h3>'+zoneContent(S.mapZone):""}</div></div>`); }
+  else h=h.replace('<h2>Zone wählen</h2>',`<h2>${L("Zone wählen","Zon seç")}</h2><p class="small" style="margin:0 0 6px"><span class="tag ok">${L("Normal","Normal")}</span> <span class="tag warn">${L("Verzögerung droht","Gecikme riski")}</span> <span class="tag bad">${L("Engpass","Darboğaz")}</span></p>`);
+  return h; };
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&&b.dataset.perf){ S.perf=b.dataset.perf; render(); } });
 
 /* ===================== RENDER & AKTIONEN ===================== */
 function render(){ renderNav(); document.querySelectorAll("#sideLang button").forEach(b=>b.setAttribute("aria-pressed",String((S.lang||"de")===b.dataset.lang))); const m=document.getElementById("main");
