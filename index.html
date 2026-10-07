@@ -36,9 +36,9 @@ body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Int
 button,input,select,textarea{font:inherit;color:inherit}
 .app{display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100%}
 .side{background:linear-gradient(170deg,#2A2E32 0%,#1A1D20 70%,#15171A 100%);color:#F2F4F5;padding:20px 14px;position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:4px;overflow:auto}
-.brand{font-weight:700;font-size:15.5px;letter-spacing:-.01em;margin:0 0 2px}
+.brand{font-weight:700;font-size:15.5px;letter-spacing:-.01em;margin:0 0 2px;flex:none}
 .brand small{display:block;font-weight:400;font-size:12px;opacity:.7;margin-top:2px}
-.demo-tag{display:inline-block;font-size:11px;padding:2px 8px;border:1px solid rgba(255,255,255,.35);border-radius:999px;opacity:.85;margin:6px 0 14px}
+.demo-tag{display:inline-block;flex:none;font-size:11px;padding:2px 8px;border:1px solid rgba(255,255,255,.35);border-radius:999px;opacity:.85;margin:6px 0 14px}
 .nav{display:flex;flex-direction:column;gap:1px;margin:0;padding:0;list-style:none}
 .nav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:14px;opacity:.78;width:100%}
 .nav button:hover{background:rgba(255,255,255,.08);opacity:1}
@@ -73,7 +73,7 @@ h2{font-size:16px;font-weight:600;margin:0 0 10px}
 .sub{color:var(--ink-2);margin:4px 0 0;font-size:14px}
 .order-pick{display:flex;align-items:center;gap:8px;font-size:14px}
 .order-pick select{padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
-.side .lang{margin:4px 0 12px;align-self:flex-start}.side .lang button{background:rgba(255,255,255,.08);color:#fff}.side .lang button[aria-pressed="true"]{background:var(--brand)}
+.side .lang{margin:4px 0 12px;align-self:flex-start;flex:none}.side .lang button{background:rgba(255,255,255,.08);color:#fff}.side .lang button[aria-pressed="true"]{background:var(--brand)}
 .card{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
