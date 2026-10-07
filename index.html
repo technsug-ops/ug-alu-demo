@@ -224,6 +224,33 @@ tr:last-child td{border-bottom:0}
 .ap-ripple{position:fixed;z-index:8;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid #B4600A;animation:aprip .9s ease-out forwards}
 @keyframes aprip{from{transform:scale(1);opacity:.9}to{transform:scale(4.5);opacity:0}}
 @keyframes apfade{0%,60%{opacity:1}100%{opacity:0}}
+
+/* Website-Simulation */
+.src-line{font-size:13px;color:var(--ink-2);margin:-6px 0 12px}
+.browser{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:#fff;color:#1b1b1b}
+.browser-bar{display:flex;align-items:center;gap:12px;background:#E9EBEE;padding:8px 12px;border-bottom:1px solid #D5D8DC}
+.browser-bar .dots i{display:inline-block;width:11px;height:11px;border-radius:50%;background:#C9CDD2;margin-right:5px}
+.browser-bar .url{flex:1;background:#fff;border-radius:999px;padding:5px 12px;font-size:13px;color:#444}
+.site{font-family:"Inter Tight",system-ui,sans-serif}
+.site-head{display:flex;align-items:center;gap:26px;padding:14px 28px;border-bottom:1px solid #E4E6E9}
+.site-logo{font-weight:800;font-size:22px;letter-spacing:.04em;color:#1F2A33}.site-logo span{color:#C8102E}
+.site-head nav{display:flex;gap:18px;font-size:14px;color:#444}.site-head nav a.on{color:#C8102E;font-weight:600;border-bottom:2px solid #C8102E}
+.site-body{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:28px;padding:22px 28px 28px}
+@media (max-width:980px){.site-body{grid-template-columns:1fr}}
+.site-h{font-size:26px;font-weight:700;margin:0 0 4px;color:#1F2A33}.site-p{color:#555;margin:0 0 14px;font-size:14.5px}
+.site-preview{background:#F6F7F8;border-radius:10px;padding:10px 14px;margin-bottom:14px}
+.web-form{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px}.web-form.two{grid-template-columns:1fr 1fr 1fr;margin-top:14px}
+.web-form label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:#555}.web-form label span{font-weight:600;color:#1F2A33}
+.web-form select,.web-form input{padding:9px 10px;border:1px solid #CFD3D8;border-radius:8px;font-size:15px;background:#fff;color:#1b1b1b}
+.web-cards{display:flex;gap:8px;flex-wrap:wrap}
+.web-card{cursor:pointer;border:2px solid #D9DDE2;background:#fff;border-radius:10px;padding:9px 12px;font-size:14px;text-align:left;display:flex;flex-direction:column;gap:2px;color:#1b1b1b}
+.web-card small{color:#777;font-size:12px}.web-card.on{border-color:#C8102E;background:#FFF5F6}
+.web-sum{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;background:#F6F7F8;border-radius:10px;font-size:14px;color:#1b1b1b}
+.site-cta{cursor:pointer;margin-top:16px;background:#C8102E;color:#fff;border:0;border-radius:10px;padding:14px 26px;font-size:17px;font-weight:700;width:100%}
+.site-cta:disabled{opacity:.5}
+.web-thanks{margin-top:14px;background:#E8F5EC;border:1px solid #BFE3C9;border-radius:10px;padding:14px 16px;font-size:14.5px;color:#1b1b1b}
+.site-side{font-size:14px;color:#444}.site-side h3{margin:0 0 8px;color:#1F2A33}.site-side ul{padding-left:18px;margin:0 0 14px}.site-box{background:#F6F7F8;border-radius:10px;padding:12px 14px}
+@media (max-width:980px){.web-form,.web-form.two{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -312,7 +339,7 @@ const skuLen=l=>l>=2000?l/10:l;
 function computeRecipe(o){
   const B=+o.B, T=+o.T, vsg=o.glas==="VSG";
   const pitch=vsg?757:1008;
-  const n=Math.max(2,Math.ceil(B/pitch));
+  const n=Math.max(2,Math.round((B-RULES.gap)/pitch));
   let panels;
   if(vsg){ const w=Math.round((B-(n+1)*RULES.gap)/n); panels=Array(n).fill(w); }
   else{ const nStd=n-2, rest=B-(n+1)*RULES.gap-nStd*RULES.stdPanel; let edge=Math.round(rest/2);
@@ -429,7 +456,7 @@ function statusOf(o){ const r=computeRecipe(o);
 function strip(o){ const s=statusOf(o); return `<div class="strip" role="list" aria-label="Auftragsstatus">${STATUS.map((n,i)=>`<div class="${i<s?'done':i===s?'now':''}" role="listitem">${i<s?'✓ ':''}${n}</div>`).join("")}</div>`; }
 
 /* ===================== VIEWS ===================== */
-const VIEWS=[["auftrag","Auftrag",1,"Sipariş"],["rezeptur","Rezeptur",2,"Reçete"],["bestand","Bestand & ATP",3,"Stok & ATP"],["wareneingang","Wareneingang",null,"Mal kabul"],["zuschnitt","Zuschnitt",4,"Kesim"],["kommission","Kommissionierung",5,"Toplama"],["versand","Lieferschein",6,"İrsaliye"],["versandtag","Versandtag",7,"Sevk günü"],["montage","Montage & Abnahme",8,"Montaj & Teslim"],"g",["auftragsbuch","Auftragsverfolgung",null,"Sipariş takibi"],["werkstatt","Werkstatt (Tablet)",null,"Atölye (Tablet)"],["lager","Lagerplan",null,"Depo planı"],["kpi","KPI & BI",null,"KPI & BI"],["vergleich","Alt-ERP vs. neu",null,"Eski ERP / yeni"]];
+const VIEWS=[["web","Website-Konfigurator",null,"Web konfigüratör"],["auftrag","Auftrag",1,"Sipariş"],["rezeptur","Rezeptur",2,"Reçete"],["bestand","Bestand & ATP",3,"Stok & ATP"],["wareneingang","Wareneingang",null,"Mal kabul"],["zuschnitt","Zuschnitt",4,"Kesim"],["kommission","Kommissionierung",5,"Toplama"],["versand","Lieferschein",6,"İrsaliye"],["versandtag","Versandtag",7,"Sevk günü"],["montage","Montage & Abnahme",8,"Montaj & Teslim"],"g",["auftragsbuch","Auftragsverfolgung",null,"Sipariş takibi"],["werkstatt","Werkstatt (Tablet)",null,"Atölye (Tablet)"],["lager","Lagerplan",null,"Depo planı"],["kpi","KPI & BI",null,"KPI & BI"],["vergleich","Alt-ERP vs. neu",null,"Eski ERP / yeni"]];
 const L=(de,tr)=>(S&&S.lang==="tr")?tr:de;
 function renderNav(){ const o=cur(); const st=statusOf(o);
   const doneMap={auftrag:true,rezeptur:true,bestand:st>=1,zuschnitt:st>=3,kommission:st>=4,versand:st>=4,versandtag:st>=6,montage:st>=7};
@@ -450,7 +477,7 @@ function schemaSVG(o,r){ const W=640,H=150,pad=30,inner=W-2*pad,scale=inner/o.B;
 function viewAuftrag(){ const o=cur(), r=computeRecipe(o), sh=shortages(o,r);
   const list=S.orders.map(x=>`<tr><td><b>${x.id}</b></td><td>${esc(x.kunde)}<div class="small muted">${CUSTOMERS[x.cust].city}</div></td><td>${x.modell==="classic"?"Classic":"Excellent"} · ${esc(x.glas)}</td><td class="num">${fmt(x.B)} × ${fmt(x.T)}</td><td>${COLORS[x.farbe]}</td><td><span class="tag ${statusOf(x)===0?'bad':statusOf(x)>=6?'ok':'sel'}">${STATUS[statusOf(x)]}</span></td></tr>`).join("");
   const cov=sh.length?coverage(o,r):null; const atp=sh.length?(cov&&cov.covered?`<div class="lock bad" style="flex-wrap:wrap">${L("Auftrag kann noch nicht bestätigt werden","Sipariş henüz onaylanamaz")}: ${sh.map(s=>s.sku).join(", ")} ${L("fehlt","eksik")}. ${L("Nachschub","İkmal")} <b>${cov.po.id}</b> ${L("trifft am","tarihinde geliyor:")} <b>${cov.eta}</b> ${L("ein → bestätigbar ab","→ onaylanabilir:")} <b>${cov.confirmFrom}</b>.</div>`:`<div class="lock bad">Auftrag kann nicht bestätigt werden: ${sh.length} Artikel fehlen im Lager. Bestellvorschlag unter „Bestand & ATP“.</div>`):`<div class="lock open">Verfügbarkeitsprüfung bestanden – Material kann reserviert werden.</div>`;
-  return topbar(L("Auftrag","Sipariş"),L("Vier Eingaben: Breite, Tiefe, Eindeckung, Farbe. Verfügbarkeit wird sofort geprüft.","Dört giriş: genişlik, derinlik, örtü, renk. Stok yeterliliği anında kontrol edilir."))+see(L("Konfiguration statt Papierrezeptur. Das Dachschema rechnet live mit, und noch vor der Bestätigung weiß der Vertrieb, ob das Material da ist.","Kağıt reçete yerine konfigürasyon. Çatı şeması canlı hesaplar; satış, onaydan önce malzemenin olup olmadığını bilir."))+`
+  return topbar(L("Auftrag","Sipariş"),L("Vier Eingaben: Breite, Tiefe, Eindeckung, Farbe. Verfügbarkeit wird sofort geprüft.","Dört giriş: genişlik, derinlik, örtü, renk. Stok yeterliliği anında kontrol edilir."))+(o.source?`<div class="src-line">${L("Eingang","Giriş")}: <b>${esc(o.source)}</b> · ${o.created||""}${o.source==="Website"?` · <span class="muted">${L("Konfiguration vom Kunden übernommen, nichts abgetippt","Konfigürasyon müşteriden alındı, elle girilmedi")}</span>`:""}</div>`:"")+see(L("Konfiguration statt Papierrezeptur. Das Dachschema rechnet live mit, und noch vor der Bestätigung weiß der Vertrieb, ob das Material da ist.","Kağıt reçete yerine konfigürasyon. Çatı şeması canlı hesaplar; satış, onaydan önce malzemenin olup olmadığını bilir."))+`
   <div class="grid2"><div class="card"><h2>Konfiguration</h2><div class="form">
      <label>Kunde<input id="f_kunde" value="${esc(o.kunde)}"></label>
      <label>Modell<select id="f_modell"><option value="classic" ${o.modell==="classic"?"selected":""}>Classic</option><option value="excellent" ${o.modell==="excellent"?"selected":""}>Excellent</option></select></label>
@@ -840,7 +867,7 @@ function milestones(o){ const st=statusOf(o); const base=dAgo(o.daysAgo||0); con
 function viewAuftragsbuch(){ const sel=cur();
   const rows=S.orders.slice().sort((a,b)=>(a.daysAgo??0)-(b.daysAgo??0)).map(o=>{ const st=statusOf(o); const r=computeRecipe(o); const cov=st===0?coverage(o,r):null; const next=st===0?(cov&&cov.covered?`Material ${cov.eta}`:"Material bestellen"):st===1?"Zuschnitt M4":st===2?`Zuschnitt ${cutState(o,r).done}/${cutState(o,r).total}`:st===3?"Kommissionierung":st===4?"Versandtag":st===5?"Abfahrt":st===6?"Montage":"abgeschlossen";
     const term=st>=6?(S.shipped[o.id]||"")+(st===7?" · ✓":""):st===0?(cov&&cov.covered?`ab ${cov.confirmFrom}`:"offen"):dStr(dIn(Math.max(1,12-(o.daysAgo||0))));
-    return `<tr class="${o.id===sel.id?'row-sel':''} ${st===0?'row-flag':''}" data-track="${o.id}" style="cursor:pointer"><td><b>${o.id}</b><div class="small muted">${o.created||""}</div></td><td>${esc(o.kunde)}<div class="small muted">${CUSTOMERS[o.cust].city}</div></td><td class="small">${o.modell==="classic"?"Classic":"Excellent"} ${fmt(o.B)}×${fmt(o.T)}<div class="muted">${esc(o.glas)}</div></td><td><span class="tag ${st===0?'bad':st>=6?'ok':'sel'}">${STATUS[st]}</span><div class="mini"><i style="width:${Math.round(st/7*100)}%"></i></div></td><td class="small">${next}</td><td class="small">${term}</td></tr>`; }).join("");
+    return `<tr class="${o.id===sel.id?'row-sel':''} ${st===0?'row-flag':''}" data-track="${o.id}" style="cursor:pointer"><td><b>${o.id}</b><div class="small muted">${o.created||""}</div></td><td>${esc(o.kunde)}<div class="small muted">${CUSTOMERS[o.cust].city}${o.source?" · "+o.source:""}</div></td><td class="small">${o.modell==="classic"?"Classic":"Excellent"} ${fmt(o.B)}×${fmt(o.T)}<div class="muted">${esc(o.glas)}</div></td><td><span class="tag ${st===0?'bad':st>=6?'ok':'sel'}">${STATUS[st]}</span><div class="mini"><i style="width:${Math.round(st/7*100)}%"></i></div></td><td class="small">${next}</td><td class="small">${term}</td></tr>`; }).join("");
   const r=computeRecipe(sel), st=statusOf(sel), cov=st===0?coverage(sel,r):null, ms=milestones(sel);
   const detail=`<div class="card"><div class="zone-head"><h2>${sel.id} · ${esc(sel.kunde)}</h2><span class="tag ${st===0?'bad':st>=6?'ok':'sel'}">${STATUS[st]}</span></div>
    <div class="timeline">${ms.map(m=>`<div class="${m.reached?'done':''}"><i></i><b>${m.n}</b><span>${m.date}</span></div>`).join("")}</div>
@@ -859,9 +886,64 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); const
   if(b&&b.id==="btnOrderTrack"){ document.getElementById("btnOrder")?.click(); const o=cur(); const sh=shortages(o,computeRecipe(o)); if(!sh.length) return; const eta=dIn(10); S.inbound.push({id:"B-26-"+String(S.inbound.length+8).padStart(2,"0"),supplier:SUPPLIERS.default.name,eta:dStr(eta),status:"bestellt",lines:sh.map(s=>({sku:s.sku,qty:s.need-s.have+2,loc:"Z6"}))}); pushEvent("Einkauf",`Bestellvorschlag für ${o.id} ausgelöst, Eingang ${dStr(eta)}`); render(); return; }
 });
 
+/* ===================== WEBSITE-KONFIGURATOR (ug-alu.de) ALS AUFTRAGSEINGANG ===================== */
+const WEB_WIDTHS=[3060,4060,5060,6060,7060,8060,9060,10060,11060,12060];
+const WEB_DEPTHS=[2500,3000,3500,4000,4500,5000];
+function webState(){ if(!S.web) S.web={B:4060,T:3500,glas:"Stegplatte Klar",farbe:"7016",pfosten:2500,name:"",cust:"duesseldorf",email:"",sent:null}; return S.web; }
+function viewWeb(){ const w=webState(); const o={B:w.B,T:w.T,glas:w.glas,farbe:w.farbe,pfosten:w.pfosten,modell:"classic"}; const r=computeRecipe(o);
+  const sel=(id,opts,val,fmtf)=>`<select data-web="${id}">${opts.map(v=>`<option value="${v}" ${String(v)===String(val)?"selected":""}>${fmtf?fmtf(v):v}</option>`).join("")}</select>`;
+  const cities=Object.entries(CUSTOMERS).map(([k,c])=>[k,c.city]).sort((a,b)=>a[1].localeCompare(b[1]));
+  const thanks=w.sent?`<div class="web-thanks"><b>${L("Vielen Dank! Ihre Anfrage ist eingegangen.","Teşekkürler! Talebiniz alındı.")}</b><br>${L("Vorgangsnummer","İşlem numarası")} <b>${w.sent}</b> · ${L("Sie erhalten innerhalb von 24 Stunden Bestätigung und Liefertermin.","24 saat içinde onay ve teslim tarihi alacaksınız.")}<br><button class="btn" id="btnWebToErp" style="margin-top:10px">${L("Weiter im System (Auftrag öffnen)","Sistemde devam et (siparişi aç)")}</button></div>`:"";
+  return scenBar()+`<div class="topbar"><div><h1>${L("Auftragseingang über ug-alu.de","ug-alu.de üzerinden sipariş girişi")}</h1><p class="sub">${L("So sieht der Kunde die Konfiguration. Was er absendet, wird ohne Abtippen zum Auftrag.","Müşteri konfigürasyonu böyle görür. Gönderdiği, elle yazılmadan siparişe dönüşür.")}</p></div></div>
+  ${see(L("Simulierter Konfigurator der UG-Alu-Website. Der Kunde wählt Breite, Tiefe, Eindeckung und Farbe; die Anfrage landet direkt im Auftragsbuch mit Quelle „Website“ – Verfügbarkeitsprüfung inklusive.","UG-Alu sitesinin simüle konfigüratörü. Müşteri genişlik, derinlik, örtü ve rengi seçer; talep doğrudan „Website“ kaynaklı olarak sipariş defterine düşer – stok kontrolü dahil."))}
+  <div class="browser"><div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">🔒 ug-alu.de/ueberdachungen/terrassenueberdachung</span></div>
+   <div class="site"><header class="site-head"><div class="site-logo">UG<span>-</span>ALU</div><nav><a>Überdachungen</a><a class="on">Terrassenüberdachung</a><a>Carports</a><a>Solar</a><a>Kontakt</a></nav></header>
+    <div class="site-body"><div class="site-main">
+      <h2 class="site-h">Terrassenüberdachung Classic</h2><p class="site-p">Aluminium-Terrassendach, pulverbeschichtet, in Standardmaßen ab Lager. Konfigurieren Sie Ihr Dach in vier Schritten.</p>
+      <div class="site-preview">${schemaSVG(o,r)}</div>
+      <div class="web-form">
+        <label><span>1 · Breite</span>${sel("B",WEB_WIDTHS,w.B,v=>fmt(v)+" mm")}</label>
+        <label><span>2 · Tiefe</span>${sel("T",WEB_DEPTHS,w.T,v=>fmt(v)+" mm")}</label>
+        <label><span>3 · Eindeckung</span><div class="web-cards">${["Stegplatte Klar","Stegplatte Opal","VSG"].map(g=>`<button class="web-card ${w.glas===g?'on':''}" data-webglas="${g}">${g==="VSG"?"VSG Glas klar":g}<small>${g==="VSG"?"8 mm Verbundsicherheitsglas":"16 mm Polycarbonat"}</small></button>`).join("")}</div></label>
+        <label><span>4 · Farbe</span><div class="web-cards">${Object.entries(COLORS).map(([k,v])=>`<button class="web-card ${w.farbe===k?'on':''}" data-webfarbe="${k}">${colorBox(k)} ${v}</button>`).join("")}</div></label>
+        <label><span>Pfostenlänge</span>${sel("pfosten",[2500,3500,5000],w.pfosten,v=>fmt(v)+" mm")}</label>
+      </div>
+      <div class="web-sum"><div><b>${r.n}</b> Felder · <b>${r.n+1}</b> Träger · <b>${r.posts}</b> Pfosten</div><div class="muted small">${L("Richtpreis wird im Angebot genannt · Lieferung ab Werk Ratingen","Fiyat teklifte bildirilir · Teslimat Ratingen fabrikasından")}</div></div>
+      <div class="web-form two"><label><span>Name</span><input data-web="name" value="${esc(w.name)}" placeholder="Vor- und Nachname"></label><label><span>Ort</span>${sel("cust",cities.map(c=>c[0]),w.cust,v=>CUSTOMERS[v].city+" ("+CUSTOMERS[v].addr.match(/\d{5}/)+")")}</label><label><span>E-Mail</span><input data-web="email" value="${esc(w.email)}" placeholder="name@beispiel.de"></label></div>
+      <button class="site-cta" id="btnWebSend" ${w.sent?"disabled":""}>${L("Unverbindlich anfragen","Bağlayıcı olmayan talep gönder")}</button>
+      ${thanks}
+    </div>
+    <aside class="site-side"><h3>Ihre Vorteile</h3><ul><li>Standardmaße ab Lager</li><li>Lieferung in 10–14 Tagen</li><li>Montage durch UG-Alu möglich</li><li>Verfügbarkeit wird sofort geprüft</li></ul><div class="site-box">Fragen? <b>02102 · 123 456</b><br>Mo–Fr 8–17 Uhr</div></aside></div>
+   </div></div>`; }
+function webSubmit(){ const w=webState(); const id="A-26-"+(300+S.orders.filter(o=>/^A-26-3/.test(o.id)).length+1); const cu=CUSTOMERS[w.cust];
+  const o=mkOrder(id,w.cust,{B:w.B,T:w.T,glas:w.glas,farbe:w.farbe,pfosten:w.pfosten,mass:"kunde",source:"Website",created:dStr(new Date()),daysAgo:0,notiz:"Anfrage über ug-alu.de"+(w.email?" · "+w.email:"")});
+  if(w.name) o.kunde=w.name; S.orders.push(o); S.sel=id; w.sent=id; delete S.planCache[id];
+  const sh=shortages(o,computeRecipe(o)); pushEvent("Webshop",`${id}: Anfrage von ${o.kunde} (${cu.city}) · ${fmt(o.B)}×${fmt(o.T)} ${o.glas}`); pushEvent("System",sh.length?`${id}: ATP – ${sh.length} Artikel fehlen, Bestätigung ausstehend`:`${id}: ATP bestanden – Material verfügbar, Bestätigung möglich`); }
+document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.webglas){ webState().glas=b.dataset.webglas; render(); return; }
+  if(b.dataset.webfarbe){ webState().farbe=b.dataset.webfarbe; render(); return; }
+  if(b.id==="btnWebSend"){ webSubmit(); render(); return; }
+  if(b.id==="btnWebToErp"){ webState().sent=null; go("auftrag"); return; } });
+document.addEventListener("change",e=>{ const t=e.target; if(t.dataset.web){ const w=webState(); const k=t.dataset.web; w[k]=["B","T","pfosten"].includes(k)?+t.value:t.value; if(w.glas==="VSG"&&w.T>4000) w.T=4000; if(k!=="name"&&k!=="email") render(); else save(); } });
+document.addEventListener("input",e=>{ const t=e.target; if(t.dataset.web&&(t.dataset.web==="name"||t.dataset.web==="email")) webState()[t.dataset.web]=t.value; });
+/* Autoplay: Szenario 1 beginnt auf der Website */
+SCRIPT1.splice(0,2,
+ {role:"kunde",de:"Familie Schmidt aus Siegburg öffnet ug-alu.de und konfiguriert: 4060 × 5000, Stegplatte klar, Anthrazit. Vier Klicks, keine Rückfrage nötig.",tr:"Siegburg'dan Schmidt ailesi ug-alu.de'yi açıp konfigüre ediyor: 4060 × 5000, şeffaf levha, antrasit. Dört tıklama, soru gerekmedi.",
+  run:async()=>{ S.web={B:4060,T:5000,glas:"Stegplatte Klar",farbe:"7016",pfosten:2500,name:"Dirk Schmidt",cust:"siegburg",email:"d.schmidt@beispiel.de",sent:null}; await V("web");
+    for(const sel of ['select[data-web="B"]','select[data-web="T"]','button[data-webglas="Stegplatte Klar"]','button[data-webfarbe="7016"]','input[data-web="name"]']){ const el=hl(sel); const p=await moveCursor(el,700); clickMark(...p); await sleep(500); } }},
+ {role:"kunde",de:"„Unverbindlich anfragen“ – die Anfrage verlässt die Website und ist eine Sekunde später ein Auftrag im System.",tr:"„Talep gönder“ – talep siteden çıkıyor, bir saniye sonra sistemde sipariş.",
+  run:async()=>{ await act("#btnWebSend",900); await sleep(1800); await act("#btnWebToErp",800); }},
+ {role:"vertrieb",de:"Anna sieht den Auftrag mit Quelle „Website“: nichts abgetippt, nichts vergessen. Die Verfügbarkeitsprüfung ist schon durch – alle Stangen auf Lager.",tr:"Anna siparişi „Website“ kaynaklı görüyor: elle yazılan, unutulan yok. Stok kontrolü çoktan geçti – tüm çubuklar stokta.",
+  run:async()=>{ hl(".lock.open"); await sleep(1500); }}
+);
+ROLES.kunde={de:"Familie Schmidt · Kunde auf ug-alu.de",tr:"Schmidt ailesi · ug-alu.de'de müşteri",ic:"🧑‍💻"};
+
+const SRC=["Website","Telefon","E-Mail","B2B-Portal","Website","Website","Telefon","Website","E-Mail","Website"];
+SCENARIOS.forEach(sc=>sc.orders.forEach((o,i)=>{ if(!o.source) o.source=SRC[i%SRC.length]; }));
+
 /* ===================== RENDER & AKTIONEN ===================== */
 function render(){ renderNav(); document.querySelectorAll("#sideLang button").forEach(b=>b.setAttribute("aria-pressed",String((S.lang||"de")===b.dataset.lang))); const m=document.getElementById("main");
-  const map={auftrag:viewAuftrag,rezeptur:viewRezeptur,bestand:viewBestand,wareneingang:viewWareneingang,zuschnitt:viewZuschnitt,kommission:viewKommission,versand:viewVersand,versandtag:viewVersandtag,montage:viewMontage,lager:viewLager,kpi:viewKPI,vergleich:viewVergleich,werkstatt:viewWerkstatt,auftragsbuch:viewAuftragsbuch};
+  const map={auftrag:viewAuftrag,rezeptur:viewRezeptur,bestand:viewBestand,wareneingang:viewWareneingang,zuschnitt:viewZuschnitt,kommission:viewKommission,versand:viewVersand,versandtag:viewVersandtag,montage:viewMontage,lager:viewLager,kpi:viewKPI,vergleich:viewVergleich,werkstatt:viewWerkstatt,auftragsbuch:viewAuftragsbuch,web:viewWeb};
   m.innerHTML=(map[S.view]||viewAuftrag)(); if(S.view==="kpi") drawCharts(); save(); }
 function go(v){ S.view=v; render(); window.scrollTo({top:0}); }
 function readForm(){ const o=cur(); const g=id=>document.getElementById(id);
