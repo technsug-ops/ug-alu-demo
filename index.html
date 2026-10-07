@@ -276,12 +276,12 @@ const REF={
 };
 const ALT_ERP_LINES=["Wandprofil","Regenrinne","Scharniere","Träger","Klip","Endklip","Abstandhalter","Pfosten","U 16 / VSG L-Profil","Fallrohr-Set","Stegplatte / VSG-Glas"];
 const CUSTOMERS={
-  siegburg:{name:"Dirk Schmidt",addr:"Im Alten Garten 25, 53721 Siegburg",city:"Siegburg",lon:7.21,lat:50.80,km:150,min:105},
-  krefeld:{name:"Marc Tekolf",addr:"Ilvericherstr. 14, 47809 Krefeld",city:"Krefeld",lon:6.56,lat:51.33,km:225,min:150},
-  augsburg:{name:"Armando Vammacegna",addr:"Hindelangerstraße 46d, 86163 Augsburg",city:"Augsburg",lon:10.90,lat:48.37,km:330,min:215},
-  diez:{name:"Michael Hartsch",addr:"Brandenburger Straße 46, 65582 Diez",city:"Diez",lon:8.02,lat:50.37,km:70,min:60},
+  siegburg:{name:"Dirk Schmidt",addr:"Im Alten Garten 25, 53721 Siegburg",city:"Siegburg",lon:7.21,lat:50.80,km:85,min:70},
+  krefeld:{name:"Marc Tekolf",addr:"Ilvericherstr. 14, 47809 Krefeld",city:"Krefeld",lon:6.56,lat:51.33,km:25,min:30},
+  muenster:{name:"Armando Vammacegna",addr:"Warendorfer Str. 46, 48145 Münster",city:"Münster",lon:7.63,lat:51.96,km:115,min:85},
+  wuppertal:{name:"Michael Hartsch",addr:"Friedrich-Ebert-Str. 46, 42103 Wuppertal",city:"Wuppertal",lon:7.15,lat:51.26,km:35,min:40},
 };
-const WERK={name:"UG-Alu Werk",lon:8.5,lat:50.3};
+const WERK={name:"UG-Alu Ratingen",lon:6.85,lat:51.30};
 
 /* ===================== SZENARIEN ===================== */
 function mkOrder(id,c,o){ const cu=CUSTOMERS[c]; return Object.assign({id,kunde:cu.name,cust:c,modell:"classic",farbe:"7016",pfosten:2500,mass:"ugalu",notiz:"",created:"25.09.2026"},o); }
@@ -292,9 +292,9 @@ const SCENARIOS=[
    orders:[mkOrder("A-26-102","krefeld",{B:5796,T:3730,glas:"Stegplatte Klar",notiz:"1 Pfosten extra, Sonnensegel",extraPost:1})],
    rest:[{id:"R-0007",base:"7576-7016",len:1106,loc:"Z5-Rest",from:"A-26-101"},{id:"R-0008",base:"7975-7016",len:1312,loc:"Z5-Rest",from:"A-26-101"},{id:"R-0009",base:"7324",len:1996,loc:"Z5-Rest",from:"A-26-101"},{id:"R-0010",base:"4856-7016",len:2172,loc:"Z5-Rest",from:"A-26-099"}],stock:{}},
   {id:3,title:"3 · VSG mit Fremdglas",titleTr:"3 · Fason camlı VSG",desc:"Classic 6056 × 4000 in Weiß mit VSG. Profile und Zubehör sind fertig, aber das Glas kommt vom Glaser: Versand bleibt gesperrt, bis Z10 vollständig ist.",descTr:"Beyaz, VSG camlı Classic 6056 × 4000. Profil ve aksesuar hazır ama cam camcıdan geliyor: Z10 tamamlanana kadar sevk kilitli.",
-   orders:[mkOrder("A-26-103","diez",{B:6056,T:4000,glas:"VSG",farbe:"9016"})],rest:[],stock:{},preset:"awaitGlass"},
-  {id:4,title:"4 · Versandtag mit drei Kunden",titleTr:"4 · Üç müşterili sevk günü",desc:"Drei versandbereite Aufträge nach Siegburg, Krefeld und Augsburg. Route, Beladereihenfolge, Checkliste – und ein vergessener Karton.",descTr:"Siegburg, Krefeld ve Augsburg'a üç hazır sipariş. Rota, yükleme sırası, checklist – ve unutulan bir koli.",
-   orders:[mkOrder("A-26-101","siegburg",{B:3996,T:5000,glas:"Stegplatte Klar",mass:"kunde"}),mkOrder("A-26-102","krefeld",{B:5796,T:3730,glas:"Stegplatte Klar",notiz:"1 Pfosten extra",extraPost:1}),mkOrder("A-26-104","augsburg",{B:6796,T:3900,glas:"Stegplatte Klar"})],
+   orders:[mkOrder("A-26-103","wuppertal",{B:6056,T:4000,glas:"VSG",farbe:"9016"})],rest:[],stock:{},preset:"awaitGlass"},
+  {id:4,title:"4 · Versandtag mit drei Kunden",titleTr:"4 · Üç müşterili sevk günü",desc:"Drei versandbereite Aufträge nach Krefeld, Siegburg und Münster. Route, Beladereihenfolge, Checkliste – und ein vergessener Karton.",descTr:"Krefeld, Siegburg ve Münster'e üç hazır sipariş. Rota, yükleme sırası, checklist – ve unutulan bir koli.",
+   orders:[mkOrder("A-26-101","siegburg",{B:3996,T:5000,glas:"Stegplatte Klar",mass:"kunde"}),mkOrder("A-26-102","krefeld",{B:5796,T:3730,glas:"Stegplatte Klar",notiz:"1 Pfosten extra",extraPost:1}),mkOrder("A-26-104","muenster",{B:6796,T:3900,glas:"Stegplatte Klar"})],
    rest:[],stock:{},preset:"ready"},
   {id:5,title:"5 · Kein Auftrag ohne Material",titleTr:"5 · Malzemesiz sipariş yok",desc:"Classic 7056 × 3500 in Opal. Zwei Artikel fehlen im Lager: Der Auftrag kann nicht bestätigt werden, das System schlägt Bestellung und Liefertermin vor.",descTr:"Opal Classic 7056 × 3500. İki kalem stokta yok: sipariş onaylanamaz, sistem tedarik siparişi ve termin önerir.",
    orders:[mkOrder("A-26-105","siegburg",{B:7056,T:3500,glas:"Stegplatte Opal",notiz:"Fundament durch UG-Alu"})],rest:[],stock:{"7576-7016-350":2,"7860-7016-700":0,"7859-7016-700":3}},
@@ -767,13 +767,14 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b
 
 /* ===================== SZENARIO 6: AUFTRAGSBUCH (10 Aufträge, Verfolgung) ===================== */
 Object.assign(CUSTOMERS,{
-  bonn:{name:"Petra Lindner",addr:"Kölnstraße 112, 53111 Bonn",city:"Bonn",lon:7.10,lat:50.73,km:160,min:110},
-  wiesbaden:{name:"Familie Öztürk",addr:"Biebricher Allee 40, 65187 Wiesbaden",city:"Wiesbaden",lon:8.24,lat:50.08,km:45,min:40},
-  koblenz:{name:"Bauer & Sohn GaLaBau",addr:"Hohenzollernstr. 8, 56068 Koblenz",city:"Koblenz",lon:7.59,lat:50.36,km:95,min:75},
-  mainz:{name:"Hotel Rheinblick",addr:"Rheinstraße 3, 55116 Mainz",city:"Mainz",lon:8.27,lat:50.00,km:50,min:45},
-  giessen:{name:"Thomas Wagner",addr:"Marburger Str. 21, 35390 Gießen",city:"Gießen",lon:8.68,lat:50.58,km:70,min:60},
-  limburg:{name:"Dachdeckerei Kremer",addr:"Diezer Str. 60, 65549 Limburg",city:"Limburg",lon:8.06,lat:50.39,km:65,min:55},
-  heidelberg:{name:"Sabine Roth",addr:"Rohrbacher Str. 77, 69115 Heidelberg",city:"Heidelberg",lon:8.69,lat:49.40,km:105,min:80},
+  duesseldorf:{name:"Familie Öztürk",addr:"Kaiserswerther Str. 140, 40474 Düsseldorf",city:"Düsseldorf",lon:6.77,lat:51.25,km:12,min:20},
+  koblenz:{name:"Bauer & Sohn GaLaBau",addr:"Hohenzollernstr. 8, 56068 Koblenz",city:"Koblenz",lon:7.59,lat:50.36,km:140,min:105},
+  essen:{name:"Hotel Ruhrblick",addr:"Rüttenscheider Str. 3, 45130 Essen",city:"Essen",lon:7.01,lat:51.45,km:30,min:35},
+  dortmund:{name:"Thomas Wagner",addr:"Hohe Str. 21, 44139 Dortmund",city:"Dortmund",lon:7.47,lat:51.51,km:65,min:55},
+  moenchengladbach:{name:"Dachdeckerei Kremer",addr:"Hindenburgstr. 60, 41061 Mönchengladbach",city:"Mönchengladbach",lon:6.44,lat:51.19,km:45,min:45},
+  aachen:{name:"Sabine Roth",addr:"Jülicher Str. 77, 52070 Aachen",city:"Aachen",lon:6.08,lat:50.78,km:95,min:75},
+  bonn:{name:"Petra Lindner",addr:"Kölnstraße 112, 53111 Bonn",city:"Bonn",lon:7.10,lat:50.73,km:80,min:65},
+  koeln:{name:"Dachdeckerei Lenz",addr:"Venloer Str. 310, 50823 Köln",city:"Köln",lon:6.92,lat:50.95,km:50,min:50},
 });
 const dAgo=n=>{ const d=new Date(); d.setDate(d.getDate()-n); return d; };
 const dIn=n=>{ const d=new Date(); d.setDate(d.getDate()+n); return d; };
@@ -783,16 +784,16 @@ SCENARIOS.push({id:6,title:"6 · Auftragsbuch",titleTr:"6 · Sipariş defteri",
  desc:"Zehn Aufträge aus drei Wochen in verschiedenen Zuständen. Drei neue Aufträge gehen glatt durch, der vierte scheitert an einer einzigen Wandprofil-Stange: Liefertermin in einer Woche, Nachschub bereits bestellt, Kunde wird informiert.",
  descTr:"Üç haftaya yayılmış on sipariş, farklı durumlarda. Üç yeni sipariş sorunsuz geçiyor, dördüncüsü tek bir duvar profili çubuğuna takılıyor: bir hafta sonra termin, ikmal çoktan sipariş edildi, müşteri bilgilendiriliyor.",
  orders:[
-  mk6("A-26-201","wiesbaden",{B:3996,T:3000,glas:"Stegplatte Klar"},21,"montiert"),
+  mk6("A-26-201","duesseldorf",{B:3996,T:3000,glas:"Stegplatte Klar"},21,"montiert"),
   mk6("A-26-202","koblenz",{B:5796,T:3730,glas:"Stegplatte Opal",extraPost:1,notiz:"Gewerbekunde, Rahmenvertrag"},18,"montiert"),
-  mk6("A-26-203","mainz",{B:6056,T:4000,glas:"VSG",farbe:"9016",notiz:"Hotelterrasse, Montage durch UG-Alu"},15,"versendet"),
-  mk6("A-26-204","giessen",{B:3996,T:5000,glas:"Stegplatte Klar",mass:"kunde"},11,"versandbereit"),
-  mk6("A-26-205","limburg",{B:4996,T:3500,glas:"Stegplatte Klar"},8,"kommission"),
-  mk6("A-26-206","heidelberg",{B:6796,T:3900,glas:"Stegplatte Opal"},6,"zuschnitt"),
+  mk6("A-26-203","essen",{B:6056,T:4000,glas:"VSG",farbe:"9016",notiz:"Hotelterrasse, Montage durch UG-Alu"},15,"versendet"),
+  mk6("A-26-204","dortmund",{B:3996,T:5000,glas:"Stegplatte Klar",mass:"kunde"},11,"versandbereit"),
+  mk6("A-26-205","moenchengladbach",{B:4996,T:3500,glas:"Stegplatte Klar"},8,"kommission"),
+  mk6("A-26-206","aachen",{B:6796,T:3900,glas:"Stegplatte Opal"},6,"zuschnitt"),
   mk6("A-26-207","siegburg",{B:3996,T:4000,glas:"Stegplatte Klar",mass:"kunde"},2,"reserviert"),
   mk6("A-26-208","bonn",{B:4996,T:3000,glas:"Stegplatte Klar"},1,"reserviert"),
   mk6("A-26-209","krefeld",{B:5996,T:3730,glas:"Stegplatte Klar"},0,"reserviert"),
-  mk6("A-26-210","augsburg",{B:7056,T:3500,glas:"Stegplatte Opal",notiz:"Fundament durch UG-Alu"},0,"offen"),
+  mk6("A-26-210","koeln",{B:7056,T:3500,glas:"Stegplatte Opal",notiz:"Fundament durch UG-Alu"},0,"offen"),
  ],
  rest:[{id:"R-0031",base:"7975-7016",len:1640,loc:"Z5-Rest",from:"A-26-205"},{id:"R-0032",base:"7576-7016",len:1106,loc:"Z5-Rest",from:"A-26-204"}],
  stock:{"7860-7016-700":0,"7859-7016-700":4,"7319-7016-700":6,"7576-7016-350":14,"4856-7016-350":12,"4857-7016-350":6,"7975-7016-943":60,"7860-7016-400":9,"7860-7016-500":6,"7860-7016-600":6,"7576-7016-500":10,"7576-7016-400":14,"4856-7016-400":12,"4857-7016-400":8,"4856-7016-500":9,"4857-7016-500":6,"4856-7016-300":10,"4857-7016-300":6,"7576-7016-300":12,"7576-7016-400":24,"7860-7016-300":5,"7859-7016-300":5,"7319-7016-300":6,"7860-7016-600":8,"7859-7016-600":6,"7319-7016-600":8},
