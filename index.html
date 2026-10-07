@@ -218,6 +218,12 @@ tr:last-child td{border-bottom:0}
 .timeline b{display:block;font-weight:600}
 .portal{background:var(--bg);border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5}
 @media (max-width:980px){.timeline{grid-template-columns:repeat(3,1fr)}}
+
+.ap-cursor{position:fixed;z-index:9;pointer-events:none;transform:translate(-3px,-2px);transition:left .6s cubic-bezier(.3,.7,.3,1),top .6s cubic-bezier(.3,.7,.3,1);filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.ap-dot{position:fixed;z-index:8;pointer-events:none;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#B4600A;color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:apfade 9s forwards}
+.ap-ripple{position:fixed;z-index:8;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid #B4600A;animation:aprip .9s ease-out forwards}
+@keyframes aprip{from{transform:scale(1);opacity:.9}to{transform:scale(4.5);opacity:0}}
+@keyframes apfade{0%,60%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -720,22 +726,27 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b
 
 /* ===================== AUTOPLAY: Szenario läuft wie von Hand ===================== */
 const ROLES={vertrieb:{de:"Anna Keller · Vertrieb (Z1)",tr:"Anna Keller · Satış (Z1)",ic:"🧑‍💼"},lager:{de:"Sandra Vogel · Lager & Einkauf",tr:"Sandra Vogel · Depo & Satın alma",ic:"📦"},saege:{de:"Kevin Bauer · Säge M4",tr:"Kevin Bauer · Testere M4",ic:"🪚"},komm:{de:"Lukas Weber · Kommissionierung",tr:"Lukas Weber · Toplama",ic:"🏷️"},fahrer:{de:"Tomasz Nowak · Fahrer, Tor 2",tr:"Tomasz Nowak · Şoför, Kapı 2",ic:"🚚"},montage:{de:"Montageteam beim Kunden",tr:"Montaj ekibi, müşteride",ic:"🔧"},system:{de:"System",tr:"Sistem",ic:"⚙️"},chef:{de:"Geschäftsführung",tr:"Yönetim",ic:"📊"}};
-const AP={running:false,paused:false,stop:false,speed:0.7,step:0,total:0};
+const AP={running:false,paused:false,stop:false,speed:0.5,step:0,total:0};
+/* Sichtbarer Zeiger + Klickspur */
+function cursorEl(){ let c=document.getElementById("apcur"); if(!c){ c=document.createElement("div"); c.id="apcur"; c.className="ap-cursor"; c.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 2l16 9-7 1.5L17 20l-2.5 1.2L10 14l-5 5z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>'; document.body.appendChild(c); c.style.left="40%"; c.style.top="40%"; } return c; }
+async function moveCursor(el,ms=650){ if(!el) return; const c=cursorEl(); const r=el.getBoundingClientRect(); const x=r.left+Math.min(r.width/2,120), y=r.top+r.height/2; c.style.left=x+"px"; c.style.top=y+"px"; await sleep(ms); return [x,y]; }
+function clickMark(x,y){ const d=document.createElement("div"); d.className="ap-dot"; d.style.left=x+"px"; d.style.top=y+"px"; const n=++clickMark.n; d.textContent=n; document.body.appendChild(d); setTimeout(()=>d.remove(),9000); const rp=document.createElement("div"); rp.className="ap-ripple"; rp.style.left=x+"px"; rp.style.top=y+"px"; document.body.appendChild(rp); setTimeout(()=>rp.remove(),900); }
+clickMark.n=0;
 const sleep=ms=>new Promise(res=>{ const t0=Date.now(); const tick=()=>{ if(AP.stop) return res(); if(AP.paused){ setTimeout(tick,120); return; } if(Date.now()-t0>=ms/AP.speed) return res(); setTimeout(tick,60); }; tick(); });
 function narrate(role,de,trT){ const L=S.lang||"de"; const r=ROLES[role]; const box=document.getElementById("apbar"); if(!box) return; box.querySelector(".ap-role").textContent=r.ic+" "+(r[L]||r.de); box.querySelector(".ap-text").textContent=L==="tr"?trT:de; box.querySelector(".ap-step").textContent=`${AP.step}/${AP.total}`; }
 function hl(sel){ document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); const el=document.querySelector(sel); if(el){ el.classList.add("ap-hl"); el.scrollIntoView({block:"center",behavior:AP.speed>2?"auto":"smooth"}); } return el; }
-async function act(sel,ms=1000){ const el=hl(sel); await sleep(ms); if(AP.stop) return; if(el) el.click(); await sleep(250); }
+async function act(sel,ms=1000){ const el=hl(sel); if(!el) return; const p=await moveCursor(el,ms); if(AP.stop) return; clickMark(...p); await sleep(350); el.click(); await sleep(450); }
 function apBar(){ const L=S.lang||"de"; return `<div class="apbar" id="apbar"><div class="ap-role"></div><div class="ap-text"></div><div class="ap-ctl"><span class="ap-step"></span><button data-ap="pause" title="Pause">⏸</button><button data-ap="play" title="Weiter">▶</button><button data-ap="speed">${AP.speed}×</button><button data-ap="stop">✕ ${L==="tr"?"Bitir":"Beenden"}</button></div></div>`; }
 function apStart(scen){ if(AP.running) return; S=freshState(scen); S.view="auftrag"; render(); AP.running=true; AP.paused=false; AP.stop=false; AP.step=0; document.body.insertAdjacentHTML("beforeend",apBar()); const script=scen===5?SCRIPT5:SCRIPT1; AP.total=script.length; runScript(script); }
-function apEnd(){ AP.running=false; AP.stop=true; document.getElementById("apbar")?.remove(); document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); }
+function apEnd(){ AP.running=false; AP.stop=true; document.getElementById("apbar")?.remove(); document.getElementById("apcur")?.remove(); document.querySelectorAll(".ap-dot,.ap-ripple").forEach(e=>e.remove()); clickMark.n=0; document.querySelectorAll(".ap-hl").forEach(e=>e.classList.remove("ap-hl")); }
 async function runScript(script){ for(const st of script){ if(AP.stop) break; AP.step++; narrate(st.role,st.de,st.tr); await sleep(900); await st.run(); if(AP.stop) break; await sleep(st.hold??2600); } if(!AP.stop){ narrate("system","Szenario abgeschlossen. Alle Schritte stehen im Ereignisprotokoll (Alt-ERP vs. neu).","Senaryo tamamlandı. Tüm adımlar olay protokolünde (Alt-ERP vs. neu)."); await sleep(3500); } apEnd(); }
 const V=async v=>{ S.view=v; render(); await sleep(1400); };
 const TAB=async s=>{ S.view="werkstatt"; S.station=s; S.tab={}; render(); await sleep(1400); };
-async function cutAllTablet(o,r,visible){ const plan=planFor(o,r); for(let i=0;i<plan.length;i++){ if(AP.stop) return; const c=S.cut[o.id]||{}; if(c[i]) continue; S.tab={}; render(); if(i<visible){ await act('button[data-tact="scan"]',900); await act('button[data-tact="done"]',900); } else { markCut(o,i,true); render(); await sleep(420); } } }
-async function tapAll(sel,ms){ for(let k=0;k<80;k++){ if(AP.stop) return; const el=document.querySelector(sel); if(!el) return; el.classList.add("ap-hl"); await sleep(ms); el.click(); } }
+async function cutAllTablet(o,r,visible){ const plan=planFor(o,r); for(let i=0;i<plan.length;i++){ if(AP.stop) return; const c=S.cut[o.id]||{}; if(c[i]) continue; S.tab={}; render(); if(i<visible){ await act('button[data-tact="scan"]',900); await act('button[data-tact="done"]',900); } else { const btn=document.querySelector('button[data-tact="done"]'); if(btn){ const p=await moveCursor(btn,i%6===0?500:120); clickMark(...p); } markCut(o,i,true); render(); await sleep(520); } } }
+async function tapAll(sel,ms){ for(let k=0;k<80;k++){ if(AP.stop) return; const el=document.querySelector(sel); if(!el) return; el.classList.add("ap-hl"); const p=await moveCursor(el,ms); clickMark(...p); await sleep(180); el.click(); } }
 
 const SCRIPT1=[
- {role:"vertrieb",de:"Kunde Schmidt aus Siegburg ruft an: Terrassendach 3996 × 5000, Stegplatte klar, Anthrazit. Anna gibt die vier Werte ein.",tr:"Siegburg'dan müşteri Schmidt arıyor: 3996 × 5000 teras çatısı, şeffaf levha, antrasit. Anna dört değeri giriyor.",run:async()=>{ await V("auftrag"); hl("#f_B"); await sleep(800); hl("#f_T"); await sleep(800); hl("#f_glas"); await sleep(600); }},
+ {role:"vertrieb",de:"Kunde Schmidt aus Siegburg ruft an: Terrassendach 3996 × 5000, Stegplatte klar, Anthrazit. Anna gibt die vier Werte ein.",tr:"Siegburg'dan müşteri Schmidt arıyor: 3996 × 5000 teras çatısı, şeffaf levha, antrasit. Anna dört değeri giriyor.",run:async()=>{ await V("auftrag"); for(const id of ["#f_B","#f_T","#f_glas","#f_farbe"]){ const el=hl(id); const p=await moveCursor(el,700); clickMark(...p); await sleep(500); } }},
  {role:"system",de:"Verfügbarkeitsprüfung läuft im Hintergrund: alle 27 Stangen sind auf Lager. Der Auftrag darf bestätigt werden.",tr:"Stok yeterlilik kontrolü arka planda: 27 çubuğun tamamı stokta. Sipariş onaylanabilir.",run:async()=>{ hl(".lock.open"); await sleep(1200); }},
  {role:"vertrieb",de:"Anna bestätigt. Die Rezeptur mit 22 Positionen entsteht automatisch – früher 11 Zeilen aus dem Kopf.",tr:"Anna onaylıyor. 22 kalemlik reçete otomatik oluşuyor – eskiden 11 satır ezberden.",run:async()=>{ await act("#btnCalc",900); await sleep(600); hl("table"); }},
  {role:"lager",de:"Sandra sieht im Lager: jede Stange mit Regalplatz, Material wird reserviert. Zwei Reststücke aus Z5-Rest wären zuerst dran, wenn sie passen.",tr:"Sandra depoda görüyor: her çubuk raf yeriyle, malzeme rezerve. Uyan artık varsa önce Z5-Rest'ten alınır.",run:async()=>{ await V("bestand"); hl(".kpis"); await sleep(1200); }},
@@ -761,7 +772,7 @@ const SCRIPT5=[
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
   if(b.dataset.apstart){ apStart(+b.dataset.apstart); return; }
   if(b.dataset.ap==="pause"){ AP.paused=true; return; } if(b.dataset.ap==="play"){ AP.paused=false; return; }
-  if(b.dataset.ap==="speed"){ const steps=[0.5,0.7,1,1.5,2]; AP.speed=steps[(steps.indexOf(AP.speed)+1)%steps.length]; b.textContent=AP.speed+"×"; return; }
+  if(b.dataset.ap==="speed"){ const steps=[0.3,0.5,0.7,1,1.5]; AP.speed=steps[(steps.indexOf(AP.speed)+1)%steps.length]; b.textContent=AP.speed+"×"; return; }
   if(b.dataset.ap==="stop"){ apEnd(); return; } });
 
 /* ===================== SZENARIO 6: AUFTRAGSBUCH (10 Aufträge, Verfolgung) ===================== */
