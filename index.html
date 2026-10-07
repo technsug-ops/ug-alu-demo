@@ -1496,6 +1496,9 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&
     Object.values(res.route).forEach((r,i)=>{ const o=S.orders.find(x=>x.id===r.order); if(o) CUSTOMERS[o.cust].km=Math.round(r.distance); });
     pushEvent("RouteXL API",`200 OK · ${res.distance} km · ${Math.floor(res.duration/60)} h ${res.duration%60} min · ${L("Beladeplan aktualisiert","yükleme planı güncellendi")}`); render(); },1400); } });
 
+/* Szenario 1: Einleitung "Vom Kunden ins Werk" */
+SCRIPT1.unshift({role:"system",de:"Was der Kunde dem Büro sagt, kommt heute als Zettel, Anruf und Erinnerung in der Werkstatt an. Im System wird es einmal strukturiert erfasst – und jede Station sieht auf ihrem Tablet genau ihren Teil: Säge die Stangen, Kommissionierung die Liste, Fahrer die Adresse, Montage die Anleitung. Kein Papier, kein Zuruf, nur Statuswechsel mit Zeitstempel.",tr:"Müşterinin büroya söylediği bugün atölyeye kâğıt, telefon ve hafıza olarak ulaşıyor. Sistemde bir kez yapılandırılmış girilir – her istasyon tabletinde yalnızca kendi payını görür: testere çubukları, toplama listeyi, şoför adresi, montaj talimatı. Kâğıt yok, seslenme yok; sadece zaman damgalı durum geçişleri.",run:async()=>{ await V("auftragsbuch"); hl(".strip"); await sleep(3200); },hold:1800});
+
 /* ===================== RENDER & AKTIONEN ===================== */
 function render(){ renderNav(); document.querySelectorAll("#sideLang button").forEach(b=>b.setAttribute("aria-pressed",String((S.lang||"de")===b.dataset.lang))); const m=document.getElementById("main");
   const map={auftrag:viewAuftrag,rezeptur:viewRezeptur,bestand:viewBestand,wareneingang:viewWareneingang,zuschnitt:viewZuschnitt,kommission:viewKommission,versand:viewVersand,versandtag:viewVersandtag,montage:viewMontage,lager:viewLager,kpi:viewKPI,vergleich:viewVergleich,werkstatt:viewWerkstatt,auftragsbuch:viewAuftragsbuch,web:viewWeb,aufgaben:viewAufgaben,aufbau:viewAufbau,rechnungen:viewRechnungen};
