@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>UG-Alu Produktionssteuerung – Demo</title>
+<meta name="theme-color" content="#222629">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UG-Alu PS">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -148,7 +156,7 @@ tr:last-child td{border-bottom:0}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:6}
 .toast.show{opacity:1}
 .scroll{overflow-x:auto}
-@media (max-width:860px){html,body{overflow-x:hidden}.app{grid-template-columns:1fr}.side{position:sticky;top:0;z-index:4;height:auto;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px;padding:8px 10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}.side .foot,.demo-tag,.nav .group,.side .lang{display:none}.logo{width:84px;padding:4px 8px;margin:0;flex:none}.brand{display:none}.nav{flex-direction:row;flex-wrap:nowrap;gap:2px}.nav button{padding:7px 9px;font-size:13px;white-space:nowrap}.nav .step{display:none}.main{padding:12px 12px 60px}.form{grid-template-columns:1fr}.events{width:calc(100% - 24px);right:12px}.scen{grid-template-columns:1fr;padding:8px 10px}.scen .lbl{display:none}.scen .pills{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.scen-item{flex:none}.scen .reset{justify-self:start}.topbar{flex-direction:column;align-items:stretch;gap:8px}.topbar h1{font-size:21px}.tb-right{justify-content:flex-start}.order-pick{flex:1}.order-pick select{max-width:100%;width:100%}.strip{overflow-x:auto}.strip div{flex:none;min-width:92px;font-size:11px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:20px}.tabs{overflow-x:auto;flex-wrap:nowrap}.tabs button{white-space:nowrap}.card{padding:14px}.doc{padding:16px}.timeline{grid-template-columns:repeat(3,1fr)}.apbar{bottom:8px;width:calc(100% - 16px)}.stations{overflow-x:auto;flex-wrap:nowrap}.stations button{flex:none}.tablet-in{padding:14px}.tcut{font-size:30px}.tsku{font-size:26px}.shop-head{gap:12px}.shop-nav{display:none}}
+@media (max-width:860px){html,body{overflow-x:hidden}.app{grid-template-columns:1fr}.side{position:sticky;top:0;z-index:4;height:auto;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px;padding:8px 10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}.side .foot,.demo-tag,.nav .group,.side .lang{display:none}.logo{width:84px;padding:4px 8px;margin:0;flex:none}.brand{display:none}.nav{flex-direction:row;flex-wrap:nowrap;gap:2px}.nav button{padding:7px 9px;font-size:13px;white-space:nowrap}.nav .step{display:none}.main{padding:12px 12px 60px}.form{grid-template-columns:1fr}.events{width:calc(100% - 24px);right:12px}.scen{grid-template-columns:1fr;padding:8px 10px}.scen .lbl{display:none}.scen .pills{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.scen-item{flex:none}.scen .reset{justify-self:start}.topbar{flex-direction:column;align-items:stretch;gap:8px}.topbar>div:first-child{flex:0 0 auto}.topbar h1{font-size:21px}.tb-right{justify-content:flex-start}.order-pick{flex:1}.order-pick select{max-width:100%;width:100%}.strip{overflow-x:auto}.strip div{flex:none;min-width:92px;font-size:11px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:20px}.tabs{overflow-x:auto;flex-wrap:nowrap}.tabs button{white-space:nowrap}.card{padding:14px}.doc{padding:16px}.timeline{grid-template-columns:repeat(3,1fr)}.apbar{bottom:8px;width:calc(100% - 16px)}.stations{overflow-x:auto;flex-wrap:nowrap}.stations button{flex:none}.tablet-in{padding:14px}.tcut{font-size:30px}.tsku{font-size:26px}.shop-head{gap:12px}.shop-nav{display:none}}
 
 /* Werkstatt / Tablet */
 .lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
@@ -368,6 +376,7 @@ body.ap-on .main{padding-bottom:220px}body.ap-on .tablet{margin-bottom:60px}
 .lock.warn{background:var(--warn-bg);color:var(--warn)}
 .anim-frame{width:100%;height:860px;border:0;display:block;background:#eef3f4}
 @media (max-width:980px){.anim-frame{height:1100px}}
+.install-btn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:7;cursor:pointer;border:0;border-radius:999px;background:var(--brand);color:#222629;font-weight:700;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -1471,6 +1480,8 @@ document.addEventListener("change",e=>{ const t=e.target;
   if(["f_B","f_T","f_glas","f_modell","f_farbe","f_pf"].includes(t.id)){ readForm(); render(); }
 });
 S=load(); render();
+/* PWA */ if("serviceWorker" in navigator && /^https?:/.test(location.protocol)){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); }); }
+let deferredInstall=null; window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredInstall=e; const b=document.createElement("button"); b.className="install-btn"; b.textContent=(S.lang==="tr")?"📲 Uygulamayı yükle":"📲 App installieren"; b.onclick=async()=>{ b.remove(); deferredInstall.prompt(); deferredInstall=null; }; document.body.appendChild(b); });
 </script>
 </body>
 </html>
