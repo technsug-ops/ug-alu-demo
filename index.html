@@ -205,6 +205,8 @@ tr:last-child td{border-bottom:0}
 .apbar button{cursor:pointer;border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;border-radius:8px;padding:6px 10px;font-size:14px}
 .ap-hl{outline:3px solid #B4600A!important;outline-offset:3px;border-radius:8px;transition:outline-color .2s}
 .scen .play{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.scen-item{display:inline-flex;gap:3px;align-items:center}.scen .play{padding:5px 9px;font-size:12px}
+
 @media (max-width:860px){.apbar{grid-template-columns:1fr}.apbar .ap-ctl{grid-row:3}}
 
 /* Auftragsverfolgung */
@@ -1055,6 +1057,47 @@ const MAIL_TR={
 const MAIL_KEYS=Object.keys(MAIL_TR).sort((a,b)=>b.length-a.length); const MAIL_RE=new RegExp(MAIL_KEYS.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
 const mailTr=s=>s.replace(MAIL_RE,m=>MAIL_TR[m]??m);
 const _viewAufgaben=viewAufgaben; viewAufgaben=function(){ let html=_viewAufgaben(); if((S.lang||"de")==="tr"){ html=html.replace(/<details class="mail"><summary><b>(.*?)<\/b><span class="small muted">an (.*?)<\/span><\/summary><pre>([\s\S]*?)<\/pre><\/details>/g,(m,subj,to,body)=>`<details class="mail"><summary><b>${mailTr(subj)}</b><span class="small muted">alıcı: ${to}</span></summary><pre>${mailTr(body)}</pre><p class="small muted" style="margin:6px 0 0">Almanca orijinal:</p><pre style="opacity:.7">${body}</pre></details>`); html=html.replace('E-postalar müşteri ve çalışanlara Almanca gider; içerik bilinçli olarak çevrilmiyor.','E-postalar Almanca gönderilir; burada Türkçe karşılığı ve altında Almanca orijinali görünür.'); } return html; };
+
+/* ===================== AUTOPLAY FÜR ALLE SZENARIEN ===================== */
+const SCRIPT2=[
+ {role:"vertrieb",de:"Sondermaß: 5796 × 3730 mit Zusatzpfosten. Anna trägt die Notiz ein – der Pfosten wird zur Rezeptur, nicht zum Zettel.",tr:"Özel ölçü: 5796 × 3730, ek direkli. Anna notu giriyor – direk reçeteye giriyor, kağıda değil.",run:async()=>{ await V("auftrag"); hl("#f_notiz"); await sleep(1200); hl(".lock.open"); await sleep(1000); }},
+ {role:"system",de:"Randplatten 840 mm statt 980: die Regel-Engine teilt die Breite sauber auf, Abstandhalter 810 mm folgen automatisch.",tr:"Kenar levhalar 980 yerine 840 mm: kural motoru genişliği düzgün bölüyor, 810 mm ara parçalar otomatik geliyor.",run:async()=>{ await V("rezeptur"); hl(".schema"); await sleep(2000); }},
+ {role:"lager",de:"Reststücke zuerst: zwei Reste aus dem letzten Auftrag passen und werden vor neuen Stangen eingeplant.",tr:"Önce artıklar: önceki siparişten iki artık uyuyor ve yeni çubuklardan önce planlanıyor.",run:async()=>{ await V("bestand"); await act('button[data-tab="rest"]',800); await sleep(1500); }},
+ {role:"saege",de:"Kevin an der Säge: die ersten Stangen, darunter ein Reststück aus Z5-Rest …",tr:"Kevin testerede: ilk çubuklar, aralarında Z5-Rest'ten bir artık …",run:async()=>{ await TAB("saege"); await cutAllTablet(cur(),computeRecipe(cur()),2); }},
+ {role:"saege",de:"… ein Profil reißt beim Schnitt. „Problem“ → „Profil beschädigt“: Ausschuss ist gebucht, Nachschnitt eingeplant, Grund festgehalten.",tr:"… bir profil kesimde yırtılıyor. „Sorun“ → „Profil hasarlı“: ıskarta kaydedildi, yeniden kesim planlandı, neden kaydedildi.",run:async()=>{ await act('button[data-tact="problem"]',900); await act('button[data-tact="reason"][data-i="1"]',900); await sleep(800); }},
+ {role:"saege",de:"Weiter im Takt bis zur letzten Stange.",tr:"Son çubuğa kadar ritimle devam.",run:async()=>{ await cutAllTablet(cur(),computeRecipe(cur()),0); }},
+ {role:"system",de:"Bilanz: Reststücke zurück in Z5-Rest, Schrott gewogen, Ausschussmeldung mit Mitarbeiter und Uhrzeit im Arbeitsauftrag.",tr:"Bilanço: artıklar Z5-Rest'e döndü, hurda tartıldı, ıskarta bildirimi çalışan ve saatle iş emrinde.",run:async()=>{ await V("zuschnitt"); hl(".kpis"); await sleep(1500); await V("bestand"); S.stockTab="schrott"; render(); hl(".tabs"); await sleep(1800); },hold:2500},
+];
+const SCRIPT3=[
+ {role:"vertrieb",de:"VSG-Auftrag in Weiß: Profile und Zubehör macht UG-Alu selbst, das Glas kommt vom Glaser.",tr:"Beyaz VSG siparişi: profil ve aksesuarı UG-Alu yapıyor, cam camcıdan geliyor.",run:async()=>{ await V("auftrag"); hl(".strip"); await sleep(1500); }},
+ {role:"komm",de:"Lukas hat Z8 und Z9 fertig. Z10 bleibt gesperrt: das Glas ist noch nicht da.",tr:"Lukas Z8 ve Z9'u bitirdi. Z10 kilitli: cam henüz gelmedi.",run:async()=>{ await V("kommission"); hl(".lock"); await sleep(1800); }},
+ {role:"system",de:"Der Lieferschein lässt sich nicht drucken. Niemand kann aus Versehen ohne Glas losfahren.",tr:"İrsaliye yazdırılamıyor. Kimse yanlışlıkla camsız yola çıkamaz.",run:async()=>{ await V("versand"); hl(".lock"); await sleep(1800); }},
+ {role:"lager",de:"Der Glaser liefert. Sandra bucht: „Glas eingetroffen“ – Z10 wird frei.",tr:"Camcı teslim ediyor. Sandra kaydediyor: „Cam geldi“ – Z10 açılıyor.",run:async()=>{ await V("kommission"); await act("#btnGlas",900); await sleep(800); }},
+ {role:"komm",de:"Lukas hakt die acht Scheiben ab – jetzt ist der Auftrag versandbereit.",tr:"Lukas sekiz camı tikliyor – sipariş artık sevke hazır.",run:async()=>{ await TAB("komm"); await tapAll('button[data-pick-t]:not(.on)',350); await sleep(800); }},
+ {role:"system",de:"Lieferschein freigegeben, Glas ist als eigene Position gelistet – für Wuppertal, Montage durch UG-Alu.",tr:"İrsaliye serbest, cam ayrı kalem olarak listede – Wuppertal, montaj UG-Alu tarafından.",run:async()=>{ await V("versand"); hl(".doc"); await sleep(2000); },hold:2500},
+];
+const SCRIPT4=[
+ {role:"fahrer",de:"Versandtag: drei Aufträge nach Krefeld, Siegburg und Münster. Die Route ordnet nach Entfernung.",tr:"Sevk günü: Krefeld, Siegburg ve Münster'e üç sipariş. Rota mesafeye göre sıralıyor.",run:async()=>{ await V("versandtag"); hl(".schema"); await sleep(2200); }},
+ {role:"system",de:"Beladung umgekehrt: Münster zuerst, ganz hinten – Krefeld zuletzt, an der Tür. Kein Umladen unterwegs.",tr:"Yükleme ters sırayla: önce Münster, en dipte – en son Krefeld, kapıda. Yolda aktarma yok.",run:async()=>{ hl(".truck"); await sleep(2200); }},
+ {role:"fahrer",de:"Tomasz verlädt am Tablet … und vergisst den Zubehör-Koli für Krefeld.",tr:"Tomasz tablette yüklüyor … ve Krefeld'in aksesuar kolisini unutuyor.",run:async()=>{ await TAB("verl"); const keys=[...document.querySelectorAll('button[data-load-t]')].map(t=>t.dataset.loadT).filter(k=>!k.endsWith("|z9")||!k.startsWith("A-26-102")); for(const k of keys){ if(AP.stop) return; await act(`button[data-load-t="${k}"]`,420); } await sleep(600); }},
+ {role:"system",de:"Tor 2 gesperrt: „1 fehlt – A-26-102 Zubehör-Koli Z9“. Heute wäre das die Reklamation von übermorgen.",tr:"Kapı 2 kilitli: „1 eksik – A-26-102 aksesuar kolisi Z9“. Bugün bu, öbür günün reklamasyonu olurdu.",run:async()=>{ hl(".tbig.bad"); await sleep(2200); }},
+ {role:"fahrer",de:"Koli nachgeladen, Abfahrt frei. Drei Lieferscheine, drei Kundenbenachrichtigungen – automatisch.",tr:"Koli yüklendi, çıkış serbest. Üç irsaliye, üç müşteri bildirimi – otomatik.",run:async()=>{ await act('button[data-load-t="A-26-102|z9"]',900); await act('button[data-tact="depart"]',900); await sleep(800); }},
+ {role:"montage",de:"In Siegburg: Checkliste, Fotos, Unterschrift. Abnahme – Rechnung kann raus.",tr:"Siegburg'da: checklist, fotoğraflar, imza. Teslim onayı – fatura kesilebilir.",run:async()=>{ S.sel="A-26-101"; await TAB("mont"); await tapAll('button[data-mont-t]:not(.on)',500); await act('button[data-tact="sign"]',700); await act('button[data-tact="abnahme"]',700); await sleep(600); }},
+ {role:"chef",de:"Auftragsverfolgung am Abend: drei Aufträge unterwegs bzw. montiert, nichts offen.",tr:"Akşam sipariş takibi: üç sipariş yolda ya da monte edildi, açık bir şey yok.",run:async()=>{ await V("auftragsbuch"); hl("table"); await sleep(2000); },hold:2500},
+];
+const SCRIPT6=[
+ {role:"chef",de:"Montagmorgen: zehn Aufträge aus drei Wochen in einer Liste. Zwei montiert, einer unterwegs, drei in Produktion, drei neue – und einer wartet.",tr:"Pazartesi sabahı: üç haftanın on siparişi tek listede. İki montajı bitmiş, biri yolda, üçü üretimde, üçü yeni – ve biri bekliyor.",run:async()=>{ await V("auftragsbuch"); hl("table"); await sleep(2400); }},
+ {role:"system",de:"A-26-210 aus Köln: eine einzige 7-m-Wandprofilstange fehlt. Keine Bestätigung – aber ein Termin: Nachschub kommt in fünf Tagen.",tr:"Köln'den A-26-210: tek bir 7 m duvar profili çubuğu eksik. Onay yok – ama termin var: ikmal beş gün sonra.",run:async()=>{ await act('tr[data-track="A-26-210"]',900); hl(".lock"); await sleep(2200); }},
+ {role:"lager",de:"Sandra hat die Aufgabe bereits auf dem Tisch – mit E-Mail, Frist und dem Hinweis auf die laufende Bestellung.",tr:"Sandra'nın görevi zaten masasında – e-posta, vade ve bekleyen siparişe atıfla.",run:async()=>{ await V("aufgaben"); hl(".task"); await sleep(2200); }},
+ {role:"vertrieb",de:"Ein Klick: der Kunde bekommt den Termin schriftlich. Keine Rückfrage, kein Vertrösten.",tr:"Tek tık: müşteri termini yazılı alıyor. Soru yok, oyalama yok.",run:async()=>{ await act('button[data-task-inform]',900); await sleep(1200); }},
+ {role:"lager",de:"Fünf Tage später an Tor 1: Lieferung scannen, Mengen prüfen, buchen.",tr:"Beş gün sonra Kapı 1'de: teslimatı okut, adetleri kontrol et, kaydet.",run:async()=>{ await TAB("we"); hl(".qty"); await sleep(1200); await act('button[data-tact="book"]',900); await sleep(800); }},
+ {role:"system",de:"Material da → A-26-210 automatisch bestätigt, Aufgabe geschlossen, Kunde bekommt die Auftragsbestätigung. Niemand musste daran denken.",tr:"Malzeme geldi → A-26-210 otomatik onaylandı, görev kapandı, müşteriye onay gitti. Kimsenin hatırlaması gerekmedi.",run:async()=>{ await V("auftragsbuch"); S.sel="A-26-210"; render(); hl(".timeline"); await sleep(2000); await V("aufgaben"); hl(".task"); await sleep(1800); },hold:2500},
+];
+const SCRIPTS={1:SCRIPT1,2:SCRIPT2,3:SCRIPT3,4:SCRIPT4,5:SCRIPT5,6:SCRIPT6};
+apStart=function(scen){ if(AP.running) return; S=freshState(scen); S.view="auftrag"; render(); AP.running=true; AP.paused=false; AP.stop=false; AP.step=0; document.body.insertAdjacentHTML("beforeend",apBar()); const script=SCRIPTS[scen]||SCRIPT1; AP.total=script.length; runScript(script); };
+/* Szenario-Leiste: jedes Szenario mit eigenem ▶ */
+scenBar=function(){ const sc=SCENARIOS.find(s=>s.id===S.scen);
+  return `<div class="scen"><span class="lbl">${L("Szenario","Senaryo")}</span>${SCENARIOS.map(s=>`<span class="scen-item"><button data-scen="${s.id}" aria-pressed="${s.id===S.scen}">${L(s.title,s.titleTr||s.title)}</button><button class="play" data-apstart="${s.id}" title="${L("Automatisch abspielen","Otomatik oynat")}" aria-label="${L("Szenario","Senaryo")} ${s.id} ${L("abspielen","oynat")}">▶</button></span>`).join("")}<button class="reset" id="btnReset">${L("Demo zurücksetzen","Demoyu sıfırla")}</button><p class="desc">${esc(L(sc.desc,sc.descTr||sc.desc))} <span class="muted">· ▶ = ${L("Szenario läuft von allein, mit Erklärung","Senaryo kendiliğinden oynar, anlatımla")}</span></p></div>`; };
 
 /* ===================== RENDER & AKTIONEN ===================== */
 function render(){ renderNav(); document.querySelectorAll("#sideLang button").forEach(b=>b.setAttribute("aria-pressed",String((S.lang||"de")===b.dataset.lang))); const m=document.getElementById("main");
