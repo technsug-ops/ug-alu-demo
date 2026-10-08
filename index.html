@@ -1601,7 +1601,7 @@ document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&
 /* Mitarbeiter-Ansicht: Lagerplan nur Orientierung – keine Auslastung, Leistung oder Engpässe */
 const _viewLagerRole=viewLager; viewLager=function(){ let h=_viewLagerRole(); if((S.role||"chef")!=="mitarbeiter") return h;
   h=h.replace(/<div class="lock (?:open|warn|bad)" style="margin-bottom:14px">[\s\S]*?<\/div>(?=<div class="map-grid">)/,"");
-  h=h.replace(/<div class="kpis small"[\s\S]*?<\/div><\/div>/,"").replace(/<div class="load-bar">[\s\S]*?<\/div>/,"").replace(/<h3 class="small" style="margin:10px 0 6px">[^<]*<\/h3><div class="tabs"[\s\S]*?<\/table><\/div>/,"").replace(/<p class="muted small" style="margin:6px 0 10px">[\s\S]*?<\/p>/,"").replace(/<div class="dept-links">[\s\S]*?<\/div>/g,"");
+  h=h.replace(/<div class="kpis small"[\s\S]*?<div class="load-bar">[\s\S]*?<\/div>/,"").replace(/<h3 class="small" style="margin:10px 0 6px">[^<]*<\/h3><div class="tabs"[\s\S]*?<\/table><\/div>/,"").replace(/<p class="muted small" style="margin:6px 0 10px">[\s\S]*?<\/p>/,"").replace(/<div class="dept-links">[\s\S]*?<\/div>/g,"");
   h=h.replace(/<span class="tag (?:ok|warn|bad)">(?:Normal|Verzögerung droht|Engpass|Gecikme riski|Darboğaz)<\/span>/g,"");
   h=h.replace(/<p class="small" style="margin:0 0 6px"><span class="tag ok">[\s\S]*?<\/p>/,"");
   h=h.replace(/class="hot (?:ok|warn|bad)"/g,'class="hot"');
