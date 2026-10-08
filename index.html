@@ -1598,6 +1598,16 @@ const _processIncoming2=processIncoming; processIncoming=function(o){ if(feat("a
 const _viewAuftrag=viewAuftrag; viewAuftrag=function(){ let h=_viewAuftrag(); const o=cur(); if(o.needsRelease&&!o.autoConfirmed){ h=h.replace('<div class="lock open">✓ ',`<div class="lock open">✓ `); h=h.replace(/<div class="lock open">Verfügbarkeitsprüfung bestanden[^<]*<\/div>/,`<div class="lock open">✓ ${L("Material verfügbar – Bestätigung durch Vertrieb erforderlich (Automatik aus).","Malzeme var – satış onayı gerekli (otomatik onay kapalı).")}</div>`); } return h; };
 document.addEventListener("click",e=>{ const b=e.target.closest("button"); if(b&&b.id==="btnCalc"){ const o=cur(); if(o.needsRelease&&!o.autoConfirmed){ o.autoConfirmed=true; o.confirmed=now(); o.needsRelease=false; makeInvoice(o,"anzahlung"); } } },true);
 
+/* Mitarbeiter-Ansicht: Lagerplan nur Orientierung – keine Auslastung, Leistung oder Engpässe */
+const _viewLagerRole=viewLager; viewLager=function(){ let h=_viewLagerRole(); if((S.role||"chef")!=="mitarbeiter") return h;
+  h=h.replace(/<div class="lock (?:open|warn|bad)" style="margin-bottom:14px">[\s\S]*?<\/div>(?=<div class="map-grid">)/,"");
+  h=h.replace(/<div class="kpis small"[\s\S]*?<\/div><\/div>/,"").replace(/<div class="load-bar">[\s\S]*?<\/div>/,"").replace(/<h3 class="small" style="margin:10px 0 6px">[^<]*<\/h3><div class="tabs"[\s\S]*?<\/table><\/div>/,"").replace(/<p class="muted small" style="margin:6px 0 10px">[\s\S]*?<\/p>/,"").replace(/<div class="dept-links">[\s\S]*?<\/div>/g,"");
+  h=h.replace(/<span class="tag (?:ok|warn|bad)">(?:Normal|Verzögerung droht|Engpass|Gecikme riski|Darboğaz)<\/span>/g,"");
+  h=h.replace(/<p class="small" style="margin:0 0 6px"><span class="tag ok">[\s\S]*?<\/p>/,"");
+  h=h.replace(/class="hot (?:ok|warn|bad)"/g,'class="hot"');
+  h=h.replace('<div class="see">',`<div class="see">${L("Mitarbeiter-Ansicht: Lagerplätze und Inhalte zur Orientierung. Auslastung, Leistung und Engpässe sind der Leitung vorbehalten. ","Çalışan görünümü: yön bulmak için depo yerleri ve içerikler. Doluluk, performans ve darboğazlar yönetime aittir. ")}`);
+  return h; };
+
 /* ===================== DEMODATEN: WARENEINGANGS-HISTORIE, GESAMTBESTAND ===================== */
 const WE_HISTORY=[
  {id:"B-26-01",supplier:"Alu-Profil GmbH",eta:dStr(dAgo(26)),booked:dStr(dAgo(25)),status:"gebucht",lines:[{sku:"7576-7016-500",qty:12,loc:"Z6-D4"},{sku:"7860-7016-400",qty:8,loc:"Z6-D1"},{sku:"4856-7016-500",qty:10,loc:"Z6-D5"}],by:"Sandra Vogel",note:"vollständig, 1 Stange Kratzer → Reklamation an Lieferant"},
