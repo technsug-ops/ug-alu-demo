@@ -34,20 +34,20 @@ html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *{box-sizing:border-box}
 body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Inter Tight",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums}
 button,input,select,textarea{font:inherit;color:inherit}
-.app{display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100%}
-.side{background:linear-gradient(170deg,#2A2E32 0%,#1A1D20 70%,#15171A 100%);color:#F2F4F5;padding:20px 14px;position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:4px;overflow:auto}
-.brand{font-weight:700;font-size:15.5px;letter-spacing:-.01em;margin:0 0 2px;flex:none}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100%}
+.side{background:linear-gradient(170deg,#2A2E32 0%,#1A1D20 70%,#15171A 100%);color:#F2F4F5;padding:20px 16px;position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:4px;overflow:auto}
+.brand{font-weight:700;font-size:16.5px;letter-spacing:-.01em;margin:0 0 2px;flex:none}
 .brand small{display:block;font-weight:400;font-size:12px;opacity:.7;margin-top:2px}
 .demo-tag{display:inline-block;flex:none;font-size:11px;padding:2px 8px;border:1px solid rgba(255,255,255,.35);border-radius:999px;opacity:.85;margin:6px 0 14px}
 .nav{display:flex;flex-direction:column;gap:1px;margin:0;padding:0;list-style:none}
-.nav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:14px;opacity:.78;width:100%}
+.nav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14.5px;opacity:.78;width:100%;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nav button:hover{background:rgba(255,255,255,.08);opacity:1}
 .nav button[aria-current="page"]{background:var(--brand);color:#222629;opacity:1;font-weight:600;box-shadow:0 6px 16px -8px var(--brand)}
 .nav button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .nav .step{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.45);display:grid;place-items:center;font-size:11px;flex:none}
 .nav .step.done{background:#5FC28B;border-color:#5FC28B;color:#0E2A1B}
 .nav button[aria-current="page"] .step{border-color:#222629}
-.logo{display:block;width:150px;height:auto;margin:0 0 8px;background:#fff;padding:8px 12px;border-radius:10px}
+.logo{display:block;width:170px;height:auto;margin:0 0 8px;background:#fff;padding:8px 12px;border-radius:10px}
 .nav .group{font-size:11px;opacity:.5;padding:10px 10px 4px;letter-spacing:.02em}
 .nav .nav-lang{display:none}
 .nav .nav-role button{background:rgba(255,255,255,.1);opacity:1;font-size:13px;margin-bottom:4px}
